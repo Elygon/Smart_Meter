@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 
 const Recharge = () => {
     const [meterId, setMeterId] = useState("")
@@ -6,105 +7,134 @@ const Recharge = () => {
     const [paymentMethod, setPaymentMethod] = useState("")
     const [reference, setReference] = useState("")
     const [meters, setMeters] = useState("")
+    const [message, setMessage] = useState("")
+    const [error, setError] = useState("")
 
     // Fetch user's meters on page load
     useEffect(() => {
         const fetchMeters = async () => {
-            const token = localStorage.getItem('userToken')
-
             try {
-                const response = await fetch('http://localhost:4500/user_meter/all', {
-                  headers: {Authorization: `Bearer ${token}`}
-                })
-          
-                const data = await response.json()
-                setMeters(data.meters || [])
+                const token = localStorage.getItem("token")
+
+                const response = await axios.post('http://localhost:4500/user_meter/all',
+                    {},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "application/json"
+                        }
+                    }
+                )
+
+                // If response is an object with meters array, adjust this:
+                setMeters(response.data.meters || response.data)
                 } catch (e) {
-                    console.error(e)
+                    console.error("Error fetching meters:", err)
+                    setError("Failed to fetch meters.")
                 }
             }
 
             fetchMeters()
         }, [])
 
-        //Auto-generate reference for cash & admin manual payments
-        useEffect(() => {
-            if (paymentMethod === "cash" || paymentMethod === "admin manual") {
-                setReference(paymentMethod.toUpperCase().replace(" ", "_") + "-" + Date.now())
-            } else {
-                setReference("")
-            }
-        }, [paymentMethod])
-
+        // Handle recharge form submission
         const handleRecharge = async (e) => {
             e.preventDefault()
-            const token = localStorage.getItem("UserToken")
 
-        try {
-            const response = await fetch('http://localhost:4500/user_recharge/request', {
-              method: 'POST',
-              headers: {'Content-Type': 'application/json'},
-              body: JSON.stringify({
-                token,
-                meterId,
-                amount,
-                paymentMethod,
-                reference
-            })
-        })
-      
-        const data = await response.json()
-        alert(data.msg || "Recharge request sent!")
-    } catch (e) {
-        console.error(e)
-        alert('Error sending recharge request')
-    }
-}
+            // Auto-generate reference like "REF-20250816-123456"
+            const autoReference = `REF-${Date.now()}`
+            
+            try {
+                const token = localStorage.getItem("token")
 
-return (
-<div>
-    <h2>Recharge Your Meter</h2>
-    <form onSubmit={handleRecharge}>
-        {/* Meter selection */}
-        <select value={meterId} onChange={(e) => setMeterId(e.target.value)} required>
-            <option value="">Select Meter</option>
-            {meters.map((m) => (
-                <option key={m._id} value={m._id}>
-                    {m.meterNumber} ({m.meterType} - {m.meterTech})
-                </option>
-            ))}
-        </select>
-        <br />
+                const response = await axios.post('http://localhost:4500/user_recharge/request',
+                    {
+                        meterId,
+                        amount,
+                        paymentMethod,
+                        reference: autoReference  // Auto-generated
+                    },
+                    {
+                        headers:{
+                            Authorization: `Bearer ${token}`,
+                            "Content-Type": "applcation/json"
+                        }
+                    }
+                )
 
-        {/* Payment Method */}
-        <select value={paymentMethod} onChange={(e) => setPaymentMethod(e.target.value)} required>
-            <option value="">Select Payment Method</option>
-            <option value="cash">Cash</option>
-            <option value="bank transfer">Bank Transfer</option>
-            <option value="card payment">Card Payment</option>
-            <option value="admin manual">Admin Manual</option>
-            </select>
-            <br />
+                setMessage(`Recharge submitted! Ref: ${autoReference}`)
+                setError("")
+                console.log("Recharge response:", response.data)
+            } catch (e) {
+                console.error("Error submitting recharge request:", err)
+                setError("Failed to submit recharge request.")
+                setMessage("")
+            }
+        }
+        
+        return (
+            <div>
+                <h2>Recharge Your Meter</h2>
 
-            {/* Reference field */}
-            {paymentMethod === "bank transfer" || paymentMethod === "card payment" ? (
-                <>
-                <input
-                type="text"
-                placeholder="Enter Payment Reference / Transaction ID"
-                value={reference}
-                onChange={(e) => setReference(e.target.value)}
-                required
+                {message && <p style={{ color: "green" }}>{message}</p>}
+                {error && <p style={{ color: "red" }}>{error}</p>}
+                
+                <form onSubmit={handleRecharge}>
+                    {/* Select Meter */}
+                    <label>Choose Meter:</label>
+                    <select 
+                    value={meterId}
+                    onChange={(e) => setMeterId(e.target.value)}
+                    required
+                >
+                    <option value="">-- Select Meter --</option>
+                    {meters.map((meter) => (
+                        <option key={meter._id} value={meter._id}>
+                            {meter.meterNumber} ({meter.meterType} - {meter.meterTech})
+                        </option>
+                    ))}
+                    </select>
+                    <br /><br />
+
+                    {/* Amount */}
+                    <label>Amount:</label>
+                    <input
+                    type="number"
+                    value={amount}
+                    onChange={(e) => setAmount(e.target.value)}
+                    required
                 />
-                <br />
-                </>
-            ) : paymentMethod && (
-                <p>Generated Reference: <strong>{reference}</strong></p>
-            )}
-
-            <button type="submit">Recharge</button>
-            </form>
-        </div>
+                    <br /><br />
+                    
+                    {/* Payment Method */}
+                    <label>Payment Method:</label>
+                    <select 
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    required
+                >
+                    <option value="">Select Payment Method</option>
+                    <option value="cash">Cash</option>
+                    <option value="bank transfer">Bank Transfer</option>
+                    <option value="card payment">Card Payment</option>
+                    <option value="admin manual">Admin Manual</option>
+                    </select>
+                    <br /><br />
+                    
+                    {/* Reference field */}
+                    <label>Reference:</label>
+                    <input
+                    type="text"
+                    value={reference}
+                    onChange={(e) => setReference(e.target.value)}
+                    placeholder="Transaction reference or note"
+                    required
+                />
+                <br /><br />
+                
+                <button type="submit">Recharge</button>
+                </form>
+            </div>   
     )
 }
 

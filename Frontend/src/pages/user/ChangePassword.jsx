@@ -1,15 +1,17 @@
 import React, { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import axios from 'axios'
 
 const ChangePassword = () => {
     const [currentPassword, setCurrentPassword] = useState('')
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
     const [message, setMessage] = useState('')
-    const navigate = useNavigate()
+    const [error, setError] = useState('')
 
     const handleChangePassword = async (e) => {
       e.preventDefault()
+      setError('')
+      setMessage('')
 
       // Validation
       if (!currentPassword || !newPassword || !confirmPassword) {
@@ -18,70 +20,73 @@ const ChangePassword = () => {
       }
 
       if (newPassword !== confirmPassword) {
-        setMessage("New passwords do not match")
+        setError("New passwords do not match")
         return
       }
 
       try {
-        const token = localStorage.getItem("token") // User's JWT token
-        if (!token) {
-            setMessage("You must be logged in to change password.")
-            return
-        }
+        const token = localStorage.getItem("token") // User's JWT token   
 
-        const res = await fetch('http://localhost:4500/user_auth/change-password', {
-          method: 'POST',
-          headers: {
-            "Content-Type": "application/json}",
-            Authorization: `Bearer ${token}`
-          },
-          body: JSON.stringify({
-            currentPassword,
-            newPassword
-          })
-        })
+        const res = await axios.post('http://localhost:4500/user_auth/change-password',
+          { currentPassword, newPassword },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            },
+          }
+        )
 
-        const data = await res.json()
-
-        if (res.ok) {
-          setMessage("Password changed successfully!")
-
-          // Redirect to login after 3 seconds
-          setTimeout(() => navigate("/user/login"), 3000)
-        } else {
-          setMessage(data.msg || "Error changing password.")
+        if (res.status === 200) {
+          setMessage(res.data.msg || "Password changed successfully!")
+          setCurrentPassword('')
+          setNewPassword('')
+          setConfirmPassword('')
         }
       } catch (e) {
-        setMessage('Something went wrong. Try again')
+        setError(error.res?.data?.msg || 'Something went wrong. Try again')
       }
     }
 
     return (
       <div style={{ padding: "20px", maxwidth: "400px", margin: "auto" }}>
         <h2>Change Password</h2>
-        {message && <p>{message}</p>}
+        <p>Update your account password securely.</p>
+
+        {message && <p style={{ color: "green" }}>{message}</p>}
+        {error && <p style={{ color: "red" }}>{error}</p>}
+
         <form onSubmit={handleChangePassword}>
-            <label>Current Password:</label>
+
+          <div>
+          <label>Current Password:</label>
             <input
             type="password"
             value={currentPassword}
             onChange={(e) =>setCurrentPassword(e.target.value)}
             style={{ width: "100%", marginBottom: "10px" }}
             />
-            <label>New Password:</label>
+          </div>
+
+          <div>
+          <label>New Password:</label>
             <input
             type="password"
             value={newPassword}
             onChange={(e) =>setNewPassword(e.target.value)}
             style={{ width: "100%", marginBottom: "10px" }}
             />
-            <label>Confirm New Password:</label>
+          </div>
+
+          <div>
+          <label>Confirm New Password:</label>
             <input
             type="password"
             value={confirmPassword}
             onChange={(e) =>setConfirmPassword(e.target.value)}
             style={{ width: "100%", marginBottom: "10px" }}
             />
+          </div>
+
           <button type="submit"style={{ width: "100%" }}>Update Password</button>
         </form>
       </div>

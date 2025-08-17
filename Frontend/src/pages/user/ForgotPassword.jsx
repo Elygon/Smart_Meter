@@ -1,29 +1,24 @@
 import { useState } from 'react'
+import axios from 'axios'
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState('')
     const [message, setMessage] = useState('')
+    const [error, setError] = useState('')
 
     const handleForgotPassword = async (e) => {
       e.preventDefault()
 
       try {
-        const res = await fetch('http://localhost:4500/user_auth/forgot-password', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify({ email })
+        const res = await axios.post('http://localhost:4500/user_auth/forgot-password', {
+          email,
         })
 
-        const data = await res.json()
-
-        if (res.ok) {
-          setMessage("Password reset instructions have been sent to your email.")
-        } else {
-          setMessage(data.msg || "Failed to send reset email.")
+        if (res.status === 200) {
+          setMessage(res.data.msg || "Password reset instructions have been sent to your email.")
         }
       } catch (e) {
-        console.error("Error:", err)
-        setMessage('An error occurred. Please try again.')
+        setError(error.response?.data?.msg || "Something went wrong")
       }
     }
 

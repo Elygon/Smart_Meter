@@ -70,7 +70,7 @@ router.post('/all', async(req, res) => {
 
 
 // View a specific inquiry ticket
-router.post('/specific', async(req, res) => {
+router.post('/view', async(req, res) => {
     const {token, contactId} = req.body
 
     if(!token || !contactId) {

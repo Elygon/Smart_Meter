@@ -11,10 +11,13 @@ import UserDashboard from './pages/user/Dashboard'
 import ApplyMeter from './pages/user/ApplyMeter'
 import ViewAllMeters from './pages/user/ViewAllMeters'
 import ViewMeter from './pages/user/ViewMeter'
+import Recharge from './pages/user/Recharge'
 import RechargeHistory from './pages/user/RechargeHistory'
 import Log from './pages/user/Log'
 import Notification from './pages/user/Notification'
 import Contact from './pages/user/Contact'
+import MyTicket from './pages/user/MyTicket'
+import MyTickets from './pages/user/MyTickets'
 
 // Admin pages
 import Register from './pages/admin/Register'
@@ -38,8 +41,11 @@ const App = () => {
         <Route path="/user/apply" element={<ApplyMeter />} />
         <Route path="/user/view-meters" element={<ViewAllMeters />} />
         <Route path="/user/view-meter" element={<ViewMeter />} />
+        <Route path="/user/recharge" element={<Recharge />} />
         <Route path="/user/recharge-history" element={<RechargeHistory />} />
         <Route path="/user/logs" element={<Log />} />
+        <Route path="/user/contact" element={<MyTicket />} />
+        <Route path="/user/contact" element={<MyTickets />} />
         <Route path="/user/notification" element={<Notification />} />
         <Route path="/user/contact" element={<Contact />} />
 

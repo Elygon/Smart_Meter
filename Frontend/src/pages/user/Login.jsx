@@ -5,18 +5,25 @@ import api from '../../api/axios'
 const UserLogin = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
     const navigate = useNavigate()
 
     const handleLogin = async (e) => {
       e.preventDefault()
+      setError
 
       try {
         const res = await api.post('/user_auth/login', { email, password })
-        localStorage.setItem('token', res.data.token) // Save token for future requests
 
+        if (res.data.token) {
+        localStorage.setItem('token', res.data.token) // Save token for future requests
         navigate('/user/dashboard') // Redirect to dashboard
-      } catch (e) {
-        console.log('Login failed:', err.response?.data || err.message)
+
+      } else {
+        setError("Login failed. Please check your credentials.")
+      } 
+    } catch (e) {
+        setError(err.res?.data?.msg || "Something went wrong.")
       }
     }
 

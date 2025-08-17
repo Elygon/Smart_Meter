@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 
 const Contact = () => {
     const [reason, setReason] = useState("")
     const [message, setMessage] = useState("")
     const [loading, setLoading] = useState(false)
-    const [error, setError] = useState("")
-    const [success, setSuccess] = useState("")
+    const [status, setStatus] = useState("")
 
     const reasonsList = [
         "Billing Issue",
@@ -19,34 +19,27 @@ const Contact = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setLoading(true)
-        setError("")
-        setSuccess("")
-
-        const token = localStorage.getItem('userToken')
-        if (!token) {
-            setError("Please log in first.")
-            setLoading(false)
-            return
-        }
 
         try {
-            const res = await fetch('http://localhost:4500/user_contact', {
-              method: 'POST',
-              headers: {'Content-Type': 'application/json', Authorization: `Bearer ${token}`},
-              body: JSON.stringify({ reason, message })
-            })
-      
-            const data = await res.json()
+            // Send request using axios
+            const token = localStorage.getItem('token') // user token from login
 
-            if (res.ok) {
-                setSuccess("Your message has been sent successfully.")
-                setReason("")
-                setMessage("")
-            } else {
-                setError(data.msg || "Something went wrong.")
-            }
+            const res = await axios.post('http://localhost:4500/user_contact/send',
+                { reason, message },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            )
+      
+            setStatus("Message sent successfully.")
+            setReason("")
+            setMessage("")
         } catch (e) {
-            setError("Error connecting to server.")
+            console.error("Error connecting to server.", error)
+            setStatus("Failed to send message. Please try again")
         } finally {
             setLoading(false)
         }
@@ -56,10 +49,7 @@ const Contact = () => {
     return (
         <div style={{ padding: "20px" }}>
             <h2>Contact Support</h2>
-            <p>If you have any complaints or inquiries, please use the form below.</p>
-
-            {error && <p style={{ color: "red" }}>{error}</p>}
-            {success && <p style={{ color: "green" }}>{success}</p>}
+            <p>Send us your inquiry or complaint. Our support team will respond.</p>
 
             <form onSubmit={handleSubmit}>
                 <div>
@@ -76,15 +66,17 @@ const Contact = () => {
                     <label>Message:</label>
                     <textarea
                       value={message}
-                      onChange={(e) => setMessage(e.target.value)}placeholder="Describe your issue or inquiry..."
+                      onChange={(e) => setMessage(e.target.value)}
                       required
                     />
                 </div>
 
                 <button type="submit"disabled={loading}>
-                    {loading ? "Sending..." : "Send Message"}
+                    {loading ? "Sending..." : "Send"}
                 </button>
             </form>
+
+            {status && <p>{status}</p>}
         </div>
     )
 }

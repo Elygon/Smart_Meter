@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import api from '../../api/axios'
 
 const SignUp = () => {
     const navigate = useNavigate()
@@ -8,35 +9,26 @@ const SignUp = () => {
     const [password, setPassword] = useState('')
     const [phoneNo, setPhoneNo] = useState('')
     const [gender, setGender] = useState('')
-    const [message, setMessage] = useState('')
+    const [error, setError] = useState('')
 
     const handleSignUp = async (e) => {
         e.preventDefault()
 
         try {
-          const res = await fetch('http://localhost:4500/user_auth/signup', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({
-                fullname,
-                email,
-                password,
-                phone_no: phoneNo,
-                gender
-            })
+          const res = await api.post('/user_auth/signup', {
+            fullname,
+            email,
+            password,
+            phone_no: phoneNo,
+            gender
           })
     
-          const data = await res.json()
-
-          if (res.ok) {
-            setMessage("Sign Up successful! Redirecting to login...")
-            setTimeout(() => navigate("/user/login"), 2000)
-          } else {
-            setMessage(data.msg || "Sign Up failed.")
+          if (res.status === 200 || res.data.msg) {
+          alert("Signup successful! Please login.")
+          navigate("/user/login")
           }
         } catch (e) {
-            console.error('Error signing up:', err)
-            setMessage('An error occurred. Please try again.')
+          setError(err.res?.data?.msg || 'Something went wrong.')
         }
       }
 

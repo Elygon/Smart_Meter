@@ -1,17 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
 
 const UserDashboard = () => {
-    const [user, setUser] = useState(null)
-
-    useEffect(() => {
-        // Simulate fetching logged-in user's profile from localStorage or API
-        const storedUser = localStorage.getItem('user')
-        if (storedUser) {
-            setUser(JSON.parse(storedUser))
-        }
-    }, [])
-
     return (
         <div style={styles.container}>
             <h1>Welcome to Your Dashboard {user ? user.fullname : ''} </h1>
@@ -36,6 +26,11 @@ const UserDashboard = () => {
                 <Link to="/user/recharge"style={styles.cards}>
                     <h2>Recharge Meter</h2>
                     <p>Buy tokens or recharge your IoT meter balance.</p>
+                </Link>
+
+                <Link to="/user/recharge-history"style={styles.cards}>
+                    <h2>Recharge History</h2>
+                    <p>View all your recharge history and its details.</p>
                 </Link>
 
                 <Link to="/user/logs"style={styles.cards}>

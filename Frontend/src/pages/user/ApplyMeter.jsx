@@ -1,55 +1,92 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 
 const ApplyMeter = () => {
-    const [formData, setFormData] = useState({
-        fullname: "",
-        address: "",
-        meterType: "",
-        meterTech: ""
-    })
+    const [meterTech, setMeterTech] = useState ("") // e.g STS or IoT
+    const [meterType, setMeterType] = useState("") // prepaid or postpaid
+    const [address, setAddress] = useState ("")
+    const [loading, setLoading] = useState (false)
+    const [message, setMessage] = useState ("")
 
-    const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value })
-    }
-
-    const handleSubmit = async (e) => {
+    const handleApply = async (e) => {
         e.preventDefault()
-        const token = localStorage.getItem('userToken')
+        setLoading(true)
+        setMessage("")
 
         try {
-            const response = await fetch('http://localhost:4500/user_meter/apply', {
-              method: 'POST',
-              headers: {'Content-Type': 'application/json', Authorization: `Bearer ${token}`},
-              body: JSON.stringify({formData})
-            })
+            const token = localStorage.getItem('token')
+            const response = await axios.post('http://localhost:4500/user_meter/apply',
+                { meterTech, meterType, address },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
       
-            const data = await response.json()
-            alert(data.msg || "Applicaton submitted!")
-            } catch (e) {
-                console.error(e)
-                alert('Error applying for meter')
+            setMessage(response.data.msg || "Meter application submitted successfully!")
+            setMeterTech("")
+            setMeterType("")
+            setAddress("")
+
+            } catch (err) {
+                console.error("Apply meter error", err)
+                setMessage(err.response?.data?.msg || 'Error applying for meter')
+            } finally {
+                setLoading(false)
             }
           
     }
 
     return (
-        <div>
+        <div style={{ padding: "20px" }}>
             <h2>Apply for a Meter</h2>
-            <form onSubmit={handleSubmit}>
-                <input type="text" name="fullname" placeholder="Full Name" onChange={handleChange} /><br />
-                <input type="text" name="address" placeholder="Address" onChange={handleChange} /><br />
-                <select name="meterType" onChange={handleChange}>
-                    <option value="">Select Meter Type</option>
-                    <option value="prepaid">Prepaid</option>
-                    <option value="postpaid">Postpaid</option>
-                </select><br />
-                <select name="meterTech" onChange={handleChange}>
-                    <option value="">Select Technology</option>
-                    <option value="sts">STS</option>
-                    <option value="iot">IoT</option>
-                </select><br />
-                <button type="submit">Apply</button>
+            <p>Fill in the details below to apply for a new smart meter.</p>
+
+            <form onSubmit={handleApply}>
+                <div>
+                    <label>Meter Tech:</label>
+                    <select
+                    value={meterTech}
+                    onChange={(e) => setMeterTech(e.target.value)}
+                    required
+                    >
+                        <option value="">-- Select Tech --</option>
+                        <option value="sts">STS</option>
+                        <option value="iot">IoT</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Meter Type:</label>
+                    <select
+                    value={meterType}
+                    onChange={(e) => setMeterType(e.target.value)}
+                    required
+                    >
+                        <option value="">-- Select Type --</option>
+                        <option value="prepaid">Prepaid</option>
+                        <option value="postpaid">Postpaid</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label>Installation Address:</label>
+                    <input
+                    type="text"
+                    value={address}
+                    onChange={(e) => setAddress(e.target.value)}
+                    placeholder="Enter your installation address"
+                    required
+                    />
+                </div>
+
+                <button type="submit"disabled={loading}>
+                    {loading ? "Submitting..." : "Apply"}
+                </button>
             </form>
+
+            {message && <p>{message}</p>}
         </div>
     )
 }

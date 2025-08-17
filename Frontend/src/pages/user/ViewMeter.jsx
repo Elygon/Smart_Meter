@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import axios from 'axios'
 
 const ViewMeter = () => {
     const [meterId, setMeterId] = useState("")
@@ -6,37 +7,44 @@ const ViewMeter = () => {
     const [error, setError] = useState("")
 
     const fetchMeter = async () => {
-        try {
-            const token = localStorage.getItem("token")
-            const res = await fetch('http://localhost:4500/user_meter/specific', {
-              method: 'POST',
-              headers: {'Content-Type': 'application/json', Authorization: `Bearer ${token}`},
-              body: JSON.stringify({ token, meterId })
-            })
-      
-            const data = await res.json()
-            if (data.status === "success") {
-                setMeter(data.meter)
-                setError("")
-            } else {
-                setError (data.msg || "Meter not found.")
-            }
-        } catch (e) {
-            setError('Error fetching meter.')
+        setError("")
+        setMeter(null)
+
+        if (!meterId) {
+            setError("Please enter a meter ID.")
+            return
         }
-          
+
+        try {
+            const token = localStorage.getItem("token") // user's auth token
+            const res = await axios.post('http://localhost:4500/user_meter/view', // your backend endpoint for specific meter
+                 { meterId }, // sending meterId in body (since you used POST in backend)
+                 {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                }
+            )
+      
+            setMeter(res.data.meter)
+        } catch (e) {
+            console.error(err)
+            setError(err.res?.data?.msg || 'Failed to fetch meter. Try again.')
+        }          
     }
 
     return (
         <div style={{ padding: "20px" }}>
             <h2>View Specific Meter</h2>
+            <P>Enter your meter ID to view its details.</P>
             <input 
             type="text" 
             placeholder="Enter Meter ID"
             value={meterId}
             onChange={(e) => setMeterId(e.target.value)} 
+            style={{ marginRight: "10px", padding: "5px" }}
             />
-            <button onClick={fetchMeter}>Search</button>
+            <button onClick={fetchMeter}>Fetch Meter</button>
             
             {error && <p style={{ color: "red" }}>{error}</p>}
             
