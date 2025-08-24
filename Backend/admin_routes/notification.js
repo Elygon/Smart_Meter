@@ -5,14 +5,16 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const jwt = require('jsonwebtoken')
-const Notification = require('../models/notifications')
+const Notification = require('../models/notification')
+const User = require('../models/user')
 const Admin = require('../models/admin')
 
-//send a notification to a user
+
+//send notification
 router.post('/send', async(req, res) =>{
     const {token, user_id, title, message, type} = req.body
 
-    if(!token || !user_id || !title || !message) {
+    if(!token || !title || !message) {
         return res.status(400).send({status: 'error', msg: 'All fields must be filled'})
     }
 
@@ -20,18 +22,35 @@ router.post('/send', async(req, res) =>{
         //Verify the admin's token
         const admin = jwt.verify(token, process.env.JWT_SECRET)
 
-        //Create a new notification
-        const notification = new Notification()
-        
-        notification.title = title
-        notification.message = message
-        notification.user = user_id //Can be "all" for everyone or a specific user ID
-        notification.createdBy = admin._id
-        notification.type = type
-        
-        await notification.save()
+        // allowed notification types
+        const allowedTypes = ["info", "alert", "warning", "update"]
+        const notificationType = allowedTypes.includes(type) ? type: "info"
 
-        return res.status(200).send({status: "ok", msg: "Notification sent successfully", notification})
+        if (user_id && user_id != "all") {
+            // send to one specific user
+            const notification = new Notification()
+            notification.user = user_id //Can be "all" for everyone or a specific user ID
+            notification.title = title
+            notification.message = message
+            notification.type = notificationType
+            notification.createdBy = admin._id
+        
+            await notification.save()
+            return res.status(200).send({status: "ok", msg: "Notification sent to user", notification})
+        } else {
+            // Send to all users
+            const users = await User.find().select("_id")
+            const notifications = users.map((u) => ({
+                user: u._id, // a specific user ID
+                title,
+                message,
+                type: notificationType,
+                createdBy: admin._id
+            }))
+            
+            await Notification.insertMany(notifications)
+            return res.status(200).send({status: "ok", msg: "Notification sent to all users.", notifications})
+        }
     } catch (e) {
         if (e.name === "JsonWebTokenError") {
             return res.status(400).send({status: 'error', msg:'Token verification failed', error: e.message})
@@ -39,6 +58,7 @@ router.post('/send', async(req, res) =>{
         return res.status(500).send({status: 'error', msg:'Error sending notification', error: e.message})
     }  
 })
+
 
 //endpoint to update a notification
 router.post('/update', async(req, res) =>{
@@ -70,7 +90,7 @@ router.post('/update', async(req, res) =>{
 })
 
 
-//View all notification
+//View all notifications
 router.post('/view', async(req, res) => {
     const {token} = req.body
 
@@ -96,24 +116,26 @@ router.post('/view', async(req, res) => {
 
 //Delete a notification
 router.post('/delete', async(req, res) => {
-    const {token, notificationId} = req.body
+    const {token, notificationIds} = req.body
 
-    if(!token || !notificationId) {
-        return res.status(400).send({status: 'error', msg: 'All fields must be filled'})
+    if(!token) {
+        return res.status(400).send({status: 'error', msg: 'Token must be provided.'})
     }
 
     try {
         //Verify the admin's token
         const Admin = jwt.verify(token, process.env.JWT_SECRET)
 
-        //Delete the notification
-        const deleted = await Notification.findByIdAndDelete({_id: id, createdBy: admin._id})
-
-        if (!deleted) {
-            return res.status(400).send({status: 'error', msg: 'Notification not found'})
+        if (!notificationIds || notificationIds.length === 0) {
+            return res.status(400).send({status: "error", msg: "No notification ID(s) provided"})
         }
 
-        return res.status(200).send({status: 'ok', msg: 'Notification deleted'})
+        // Ensure notificationIds is always an array
+        const ids = Array.isArray(notificationIds) ? notificationIds : [notificationIds]
+
+        await Notification.deleteMany({_id: {$in: ids} })
+
+        return res.status(200).send({status: 'ok', msg: `${ids.length} notification(s) deleted successfully`})
     } catch (e) {
         if (e.name === "JsonWebTokenError") {
             return res.status(400).send({status: 'error', msg:'Token verification failed', error: e.message})

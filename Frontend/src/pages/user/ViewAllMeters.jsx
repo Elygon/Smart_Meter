@@ -32,7 +32,6 @@ const ViewAllMeters = () => {
     return (
         <div style={{ padding: "20px" }}>
             <h2>All Meters</h2>
-            <p>List of meters linked to your account.</p>
 
             {error && <p style={{ color: "red" }}>{error}</p>}
             {meters.length > 0 ? (

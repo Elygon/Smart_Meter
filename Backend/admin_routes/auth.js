@@ -69,7 +69,8 @@ router.post('/login', async(req, res) => {
         // create token
         const token = jwt.sign({
             _id: admin._id,
-            email: admin.email
+            email: admin.email,
+            role: "admin"
         }, process.env.JWT_SECRET)
 
         //update admin document to online

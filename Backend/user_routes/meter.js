@@ -95,7 +95,7 @@ router.post('/all', async(req, res) =>{
 })
 
 //endpoint for specific meter by ID
-router.post('/specific', async(req, res) => {
+router.post('/view', async(req, res) => {
     const {token, meterId} = req.body
 
     if(!token || !meterId) {

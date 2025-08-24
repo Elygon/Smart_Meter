@@ -37,7 +37,7 @@ const RechargeHistory = () => {
     const viewRecharge = async (id) => {
         try {
             const token = localStorage.getItem('token')
-                const res = await axios.post(`http://localhost:4500/user_recharge/${id}`,
+                const res = await axios.post('http://localhost:4500/user_recharge/view',
                     {},
                     {
                         headers: {

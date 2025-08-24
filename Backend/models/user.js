@@ -15,7 +15,7 @@ const userSchema = new Schema({
     is_deleted: {type: Boolean, default: false},
     last_login: Number,
     last_logout: Number, 
-    status: {type: String, enum: ["Active", "Suspened", "Deleted"], default: "Active"},//Status can be 'Active', 'Suspended' or 'Deleted'
+    status: {type: String, enum: ["Active", "Suspened", "Deactivated"], default: "Active"},//Status can be 'Active', 'Suspended' or 'Deleted'
     createdAt: {type: Date, default: Date.now},
     updatedAt: {type: Date, default: Date.now},
     smartMeter: {type: mongoose.Schema.Types.ObjectId, ref: 'SmartMeters'},

@@ -5,7 +5,7 @@ const dotenv = require('dotenv')
 dotenv.config()
 
 const jwt = require('jsonwebtoken')
-const Notification = require('../models/notifications')
+const Notification = require('../models/notification')
 
 
 

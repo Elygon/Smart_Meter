@@ -40,7 +40,7 @@ const Notification = () => {
     const viewNotification = async (id) => {
         try {
             const token = localStorage.getItem('token')
-                const res = await axios.post(`http://localhost:4500/user_notification/${id}`,
+                const res = await axios.post('http://localhost:4500/user_notification/single',
                     {},
                     {
                         headers: {

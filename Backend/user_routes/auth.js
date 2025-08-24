@@ -69,7 +69,8 @@ router.post('/login', async(req, res) => {
         // create token
         const token = jwt.sign({
             _id: user._id,
-            email: user.email
+            email: user.email,
+            role: user.role
         }, process.env.JWT_SECRET, {expiresIn: '1h'})
 
         //update user document to online

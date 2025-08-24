@@ -10,7 +10,7 @@ const Admin = require('../models/admin')
 const User = require('../models/user')
 const SmartMeter = require('../models/smartMeter')
 const Log = require('../models/log')
-const Notification = require('../models/notifications')
+const Notification = require('../models/notification')
 const mongoose = require('mongoose')
 
 //Recharge a user's meter

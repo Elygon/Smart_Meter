@@ -27,7 +27,7 @@ const ChangePassword = () => {
       try {
         const token = localStorage.getItem("token") // User's JWT token   
 
-        const res = await axios.post('http://localhost:4500/user_auth/change-password',
+        const res = await axios.post('http://localhost:4500/user_auth/change_password',
           { currentPassword, newPassword },
           {
             headers: {
@@ -50,7 +50,6 @@ const ChangePassword = () => {
     return (
       <div style={{ padding: "20px", maxwidth: "400px", margin: "auto" }}>
         <h2>Change Password</h2>
-        <p>Update your account password securely.</p>
 
         {message && <p style={{ color: "green" }}>{message}</p>}
         {error && <p style={{ color: "red" }}>{error}</p>}

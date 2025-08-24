@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const ResetPassword = () => {
@@ -22,7 +22,7 @@ const ResetPassword = () => {
       }
 
       try {
-        const res = await axios.post(`http://localhost:4500/user_auth/reset-password/${token}`,
+        const res = await axios.post(`http://localhost:4500/user_auth/reset_password/${token}`,
           { password: newPassword }
         )
 

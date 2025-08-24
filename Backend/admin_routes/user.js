@@ -9,7 +9,7 @@ const User = require('../models/user')
 
 
 //Get all users
-router.post('/all', async(req, res) =>{
+router.post('/users', async(req, res) =>{
     const {token} = req.body
 
     if(!token) {
@@ -37,7 +37,7 @@ router.post('/all', async(req, res) =>{
 })
 
 //Get specific user
-router.post('/specific', async(req, res) => {
+router.post('/user', async(req, res) => {
     const {token, userId} = req.body
 
     if(!token || !userId) {
@@ -97,8 +97,8 @@ router.post('/update', async(req, res) => {
 })
 
 
-//Delete user
-router.post('/delete', async(req, res) => {
+//Deactivate user
+router.post('/deactivate', async(req, res) => {
     const {token, userId, reason} = req.body
 
     if(!token || !userId || !reason) {
@@ -116,20 +116,20 @@ router.post('/delete', async(req, res) => {
             return res.status(400).send({status: 'error', msg: 'User not found'})
         }
 
-        //Add deletion reason to a log or a field in the user schema
-        user.status = 'Deleted' //Optional: Add a status field to track deleted/suspended users
-        user.deletionReason = reason //Optional: A field in the Member model
+        //Add deactivation reason to a log or a field in the user schema
+        user.status = 'Deactivated' //Optional: Add a status field to track deactivated/suspended users
+        user.deactivationReason = reason //Optional: A field in the Member model
         await user.save()
 
         //Optionally, notify the user (if notification system exists)
         //eg., send an email or message with the reason
 
-        return res.status(200).send({status: 'ok', msg: `User account deleted successfully with reason: ${reason}`})
+        return res.status(200).send({status: 'ok', msg: `User account deactivated successfully with reason: ${reason}`})
     } catch (e) {
         if (e.name === "JsonWebTokenError") {
             return res.status(400).send({status: 'error', msg:'Token verification failed', error: e.message})
         }
-        return res.status(500).send({status: 'error', msg:'Failed to delete user', error: e.message})
+        return res.status(500).send({status: 'error', msg:'Failed to deactivate user', error: e.message})
     }  
 })
 

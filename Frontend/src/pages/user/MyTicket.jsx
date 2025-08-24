@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { useParams } from 'react-router-dom'
 import axios from 'axios'
 
-const MyTicket = () => {
-    const {id} = useParams() // get ticket id from URL
+const MyTicket = ({ ticketId }) => {
     const [ticket, setTicket] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
@@ -12,7 +10,7 @@ const MyTicket = () => {
         const fetchTicket = async () => {
             try {
                 const token = localStorage.getItem('token') // get token from login
-                const res = await axios.post(`http://localhost:4500/user_contact/view/${id}`, // backend route
+                const res = await axios.post('http://localhost:4500/user_contact/view/', // backend route
                 {},
                 {
                     headers: {
@@ -32,7 +30,7 @@ const MyTicket = () => {
         }
         
         fetchTicket()
-    }, [id])
+    }, [ticketId])
 
     if (loading) return <p>Loading your ticket...</p>
     if (error) return <p>{error}</p>

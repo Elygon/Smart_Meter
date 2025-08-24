@@ -18,11 +18,6 @@ const UserDashboard = () => {
                     <p>See a list of all meters linked to your account.</p>
                 </Link>
 
-                <Link to="/user/view-meter"style={styles.cards}>
-                    <h2>View Specific Meter</h2>
-                    <p>Check details, balance and usage for a selected meter.</p>
-                </Link>
-
                 <Link to="/user/recharge"style={styles.cards}>
                     <h2>Recharge Meter</h2>
                     <p>Buy tokens or recharge your IoT meter balance.</p>
@@ -43,9 +38,19 @@ const UserDashboard = () => {
                     <p>Stay updated with meter alerts and updates.</p>
                 </Link>
 
+                <Link to="/user/contact"style={styles.cards}>
+                    <h2>Contact Support</h2>
+                    <p>Send inquiries or complaints.</p>
+                </Link>
+
+                <Link to="/user/my-tickets"style={styles.cards}>
+                    <h2>My Tickets</h2>
+                    <p>Track your submitted support tickets.</p>
+                </Link>
+
                 <Link to="/user/change-password"style={styles.cards}>
                     <h2>Change Password</h2>
-                    <p>Update your password below. You will need to log in again after changing it.</p>
+                    <p>Update your login credentials.</p>
                 </Link>
             </div>
         </div>

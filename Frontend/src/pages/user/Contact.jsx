@@ -49,7 +49,6 @@ const Contact = () => {
     return (
         <div style={{ padding: "20px" }}>
             <h2>Contact Support</h2>
-            <p>Send us your inquiry or complaint. Our support team will respond.</p>
 
             <form onSubmit={handleSubmit}>
                 <div>
