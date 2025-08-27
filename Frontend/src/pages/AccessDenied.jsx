@@ -1,5 +1,5 @@
 import React from "react"
-import { Navigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import jwtDecode from "jwt-decode"
 
 const AccessDenied = () => {
@@ -32,7 +32,15 @@ const AccessDenied = () => {
             <p>You don't have permission to view this page.</p>
             <button
             onClick={handleGoBack}
-            style={{ marginTop: "20px", padding: "10px 20px", cursor: "pointer" }}
+            style={{
+                marginTop: "20px",
+                padding: "10px 20px",
+                cursor: "pointer",
+                borderRadius: "5px",
+                border: "none",
+                background: "#007bff",
+                color: "#fff"
+             }}
             >
                 Go Back Home
             </button>

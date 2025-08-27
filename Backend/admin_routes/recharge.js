@@ -60,7 +60,7 @@ router.post('/recharge', async(req, res) =>{
 })
 
 //approve or reject a recharge request
-router.post('/review', async(req, res) => {
+router.post('/update', async(req, res) => {
     const {token, rechargeId, action} = req.body
 
     if (!token || !rechargeId || !action) {
@@ -268,7 +268,7 @@ router.post('/invalid', async(req, res) => {
 })
 
 
-//Mark a recharge as deleted
+// Summary
 router.post('/summary', async(req, res) =>{
     const {token} = req.body
 

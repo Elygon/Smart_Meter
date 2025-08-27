@@ -29,7 +29,7 @@ router.post('/apply', async(req, res) =>{
         const eMeter = await SmartMeter.findOne({user: user._id}). sort({ createdAt: -1})
 
         //Any user that already has a meter cannot reapply
-        if (eMeter && eMeter.status !== 'rejected') {
+        /*if (eMeter && eMeter.status !== 'rejected') {
             let msg = 'You have already applied for a meter.'
             
             if (eMeter.status === 'pending') {
@@ -42,6 +42,7 @@ router.post('/apply', async(req, res) =>{
             
             return res.status(400).send({status: 'error', msg})
         }
+        */
 
         // If rejected or no meter exists, allow reapplication
         const meter = new SmartMeter()

@@ -11,13 +11,7 @@ const MyTicket = ({ ticketId }) => {
             try {
                 const token = localStorage.getItem('token') // get token from login
                 const res = await axios.post('http://localhost:4500/user_contact/view/', // backend route
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }
-                }
+                { token, ticketId }
             )
             
             setTicket(res.data) 

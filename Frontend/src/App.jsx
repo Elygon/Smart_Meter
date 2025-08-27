@@ -33,6 +33,8 @@ import AdminLogs from './pages/admin/ViewLogs'
 import CreateNotification from './pages/admin/CreateNotification'
 import AllNotifications from './pages/admin/AllNotifications'
 import Notification from './pages/admin/Notification'
+import ManageTickets from './pages/admin/ManageTickets'
+import ManageTicket from './pages/admin/ManageTicket'
 
 import RequireAdmin from './components/RequireAdmin'
 import RequireUser from './components/RequireUser'
@@ -73,6 +75,8 @@ const App = () => {
         <Route path="/admin/create-notification" element={<RequireAdmin><CreateNotification /></RequireAdmin>} />
         <Route path="/admin/all-notifications" element={<RequireAdmin><AllNotifications /></RequireAdmin>} />
         <Route path="/admin/notification" element={<RequireAdmin><Notification /></RequireAdmin>} />
+        <Route path="/admin/manage-tickets" element={<RequireAdmin><ManageTickets /></RequireAdmin>} />
+        <Route path="/admin/manage-ticket" element={<RequireAdmin><ManageTicket /></RequireAdmin>} />
         <Route path="/admin/logs" element={<AdminLogs />} />
 
         {/* Access Denied Page */}

@@ -18,12 +18,7 @@ const ViewMeter = () => {
         try {
             const token = localStorage.getItem("token") // user's auth token
             const res = await axios.post('http://localhost:4500/user_meter/view', // your backend endpoint for specific meter
-                 { meterId }, // sending meterId in body (since you used POST in backend)
-                 {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                }
+                 { token, meterId: id }, // sending meterId in body (since you used POST in backend)
             )
       
             setMeter(res.data.meter)

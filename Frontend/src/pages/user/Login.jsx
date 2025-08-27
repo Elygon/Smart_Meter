@@ -30,6 +30,7 @@ const UserLogin = () => {
     return (
       <div style={styles.container}>
         <h1>User Login</h1>
+        {error && <p style={{ color: "red" }}>{error}</p>}
         <form onSubmit={handleLogin}style={styles.form}>
           <input
           type="email"

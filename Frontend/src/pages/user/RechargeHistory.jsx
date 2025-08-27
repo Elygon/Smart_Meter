@@ -14,13 +14,7 @@ const RechargeHistory = () => {
                 const token = localStorage.getItem('token')
                 
                     const res = await axios.post("http://localhost:4500/user_recharge/all", // endpoint for all recharges
-                        {},
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                                "Content-Type": "application/json"
-                            }
-                        }
+                        { token }
                     )
                 
                     setRecharges(res.data) // store array of recharge records
@@ -38,13 +32,7 @@ const RechargeHistory = () => {
         try {
             const token = localStorage.getItem('token')
                 const res = await axios.post('http://localhost:4500/user_recharge/view',
-                    {},
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json"
-                        },
-                    }
+                    { token, rechargeId: id}
                 )
 
                 setSelectedRecharge(res.data)

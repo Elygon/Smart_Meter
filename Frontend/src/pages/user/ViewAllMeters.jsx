@@ -1,62 +1,51 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const ViewAllMeters = () => {
     const [meters, setMeters] = useState([])
+    const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchMeters = async () => {
             try {
                 const token = localStorage.getItem("token") //Token from login
-                const res = await axios.post('http://localhost:4500/user_meter/all', // backend endpoint for all meters
-                    {}, // no body needed
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                        }
-                    }
-                )
-          
-                setMeters(res.data.meters || [])
+                const res = await axios.post('http://localhost:4500/user_meter/all', { // backend endpoint for all meters
+                    token
+                })
+                setMeters(res.data)
                 } catch (e) {
-                    console.error(err)
-                    setError(err.res?.data?.msg || 'Error fetching meters.')
+                    setError('Error fetching meters.')
+                } finally {
+                    setLoading(false)
             }    
         }
 
         fetchMeters()
     }, [])
+
+    if (loading) return <p>Loading meters...</p>
+    if (error) return <p style={{ color: "red" }}>{error}</p>
     
 
     return (
         <div style={{ padding: "20px" }}>
             <h2>All Meters</h2>
-
-            {error && <p style={{ color: "red" }}>{error}</p>}
             {meters.length > 0 ? (
-                <table border="1" cellPadding="10"style={{ marginTop: "20px" }}>
-                    <thead>
-                        <tr>
-                        <th>Meter ID</th>
-                        <th>Type</th>
-                        <th>Tech</th>
-                        <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {meters.map((meter) => (
-                            <tr key={meter._id}>
-                                <td>{meter._id}</td>
-                                <td>{meter.type}</td>
-                                <td>{meter.tech}</td>
-                                <td>{meter.status}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                <p>No meters found.</p>
             ) : (
-            !error && <p>No meters found for this user.</p>
+                <ul>
+                    {meters.map((meter) => (
+                        <li key={meter._id}>
+                            {meter.type} - {meter.meterNumber || "Not Assigned"}{" "}
+                            <button onClick={() => navigate("/user/ViewMeter", { state: {meterId: meter._id } })}>
+                                View
+                            </button>
+                        </li>
+                    ))}
+                </ul>
             )}
         </div>
     )

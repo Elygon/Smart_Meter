@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Link } from 'rect-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const ManageMeters = () => {
     const [meters, setMeters] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchMeters = async () => {
             try {
                 const token = localStorage.getItem("token") // admin token
-                const res = await axios.post('http://localhost:4500/admin_meter/all',{
-                    headers: { Authorization: `Bearer ${token}` }
-                })
+                const res = await axios.post('http://localhost:4500/admin_meter/all',
+                    { token }
+                )
                 setMeters(res.data)
             } catch (e) {
                 setError('Error fetching meters.')
@@ -57,7 +58,10 @@ const ManageMeters = () => {
                                 <td>{meter.tech}</td>
                                 <td>{meter.status}</td>
                                 <td>{meter.meterNumber || "Not assigned"}</td>
-                                <td><Link to={`/admin/meter/${meter._id}`}>View & Manage</Link>
+                                <td>
+                                    <button onClick={() => navigate("/admin/ManageMeter", { state: { meterId: meter._id} })}>
+                                        View
+                                    </button>
                                 </td>
                             </tr>
                         ))}

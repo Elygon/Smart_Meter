@@ -10,15 +10,10 @@ const Log = () => {
 
     // Fetch all logs on page load
     useEffect(() => {
-        const fecthLogs = async () => {
+        const fetchLogs = async () => {
             try {
                 const res = await axios.post("http://localhost:4500/user_log/all",
-                    {}, //No body needed
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
+                    { token }
                 )
                 setLogs(res.data || [])
             } catch (e) {
@@ -34,12 +29,7 @@ const Log = () => {
     const viewLog = async (logId) => {
         try {
             const res = await axios.post("http://localhost:4500/user_log/view",
-                {logId},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
+                { token, logId}
             )
             setSelectedLog(res.data)
             setMessage("")

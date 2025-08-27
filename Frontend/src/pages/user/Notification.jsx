@@ -15,13 +15,7 @@ const Notification = () => {
                 const token = localStorage.getItem('token')
                 
                     const res = await axios.post("http://localhost:4500/user_notification/all",
-                        {},
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                                "Content-Type": "application/json"
-                            }
-                        }
+                        { token }
                     )
                 
                     setNotifications(res.data)
@@ -41,13 +35,7 @@ const Notification = () => {
         try {
             const token = localStorage.getItem('token')
                 const res = await axios.post('http://localhost:4500/user_notification/single',
-                    {},
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json"
-                        },
-                    }
+                    { token, notificationId: id }
                 )
 
                 setSelectedNotification(res.data)

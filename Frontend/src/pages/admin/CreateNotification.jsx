@@ -21,9 +21,9 @@ const CreateNotification = () => {
             const payload = target === "all" ? { token, title, message, type, all: true} :
             { token, user_id: userId, title, message, type }
 
-            await axios.post('http://localhost:4500/admin_notication/send', payload, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+            await axios.post('http://localhost:4500/admin_notication/send', payload,
+                { token }
+            )
 
             setSuccess("Notification sent successfully!")
             setTitle("")

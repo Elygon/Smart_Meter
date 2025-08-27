@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { Link } from 'rect-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 const ManageUsers = () => {
     const [users, setUsers] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
                 const token = localStorage.getItem("token") // admin token
                 const res = await axios.post('http://localhost:4500/admin_user/users',{
-                    headers: { Authorization: `Bearer ${token}` }
+                    token
                 })
                 setUsers(res.data)
             } catch (e) {
@@ -54,7 +55,10 @@ const ManageUsers = () => {
                                 <td>{user.email}</td>
                                 <td>{user.role}</td>
                                 <td>{user.status || "Active"}</td> {/* default to Active if no status */}
-                                <td><Link to={`/admin/user/${user._id}`}>View</Link>
+                                <td>
+                                    <button onClick={() => navigate("/admin/ManageUser", { state: { userId: user._id} })}>
+                                        View
+                                    </button>
                                 </td>
                             </tr>
                         ))}

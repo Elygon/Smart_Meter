@@ -1,31 +1,25 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const MyTickets = () => {
     const [tickets, setTickets] = useState([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState('')
+    const navigate = useNavigate()
 
     useEffect(() => {
         const fetchTickets = async () => {
             try {
                 const token = localStorage.getItem('token') // get token from login
                 const res = await axios.post("http://localhost:4500/user_contact/all", // adjust to your backend route
-                {},
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }
-                }
-            )
-            
-            setTickets(res.data) // assuming backend returns an array
-            } catch (e) {
-                console.error("Error fetching tickets:", err)
-                setError("Failed to load tickets. Try again later.")
-            } finally {
-                setLoading(false)
+                    { token }
+                )
+                setTickets(res.data) // assuming backend returns an array
+                } catch (e) {
+                    setError("Failed to load tickets. Try again later.")
+                } finally {
+                    setLoading(false)
             }
         }
         
@@ -44,9 +38,10 @@ const MyTickets = () => {
                 <ul>
                     {tickets.map((ticket) => (
                         <li key={ticket._id}>
-                            <strong>{ticket.status}</strong> <br />
-                            {ticket.message} <br />
-                            <em>Status: {ticket.status}</em>
+                            {ticket.subject} - {ticket.status}{" "}
+                            <button onClick={() => navigate("/user/MyTicket", { state: { ticketId: ticket._id } })}>
+                                View
+                            </button>
                         </li>
                     ))}
                 </ul>

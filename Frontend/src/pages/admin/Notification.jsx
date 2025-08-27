@@ -17,8 +17,8 @@ const Notification = ({ notificationId, goBack }) => {
         try {
             const token = localStorage.getItem("token") // admin token
             const res = await axios.post('http://localhost:4500/admin_notication/single',
-                { headers: { Authorization: `Bearer ${token}` }
-            })
+                { token, id: notificationId }
+            )
             setNotification(res.data)
             setFormData({
                 title: res.data.title,
@@ -42,10 +42,9 @@ const Notification = ({ notificationId, goBack }) => {
 
         try {
             const token = localStorage.getItem("token") // admin token
-            await axios.post('http://localhost:4500/admin_notication/delete',{
-                headers: { Authorization: `Bearer ${token}` },
-                data: { notificationIds: notificationId }
-            })
+            await axios.post('http://localhost:4500/admin_notication/delete',
+                { token, notificationIds: notificationId }
+            )
             goBack() // return to AllNotifications list after delete
         } catch (e) {
             alert('Failed to delete notification.')
@@ -57,9 +56,8 @@ const Notification = ({ notificationId, goBack }) => {
         try {
             const token = localStorage.getItem("token") // admin token
             await axios.post('http://localhost:4500/admin_notication/update',
-                { notificationId, ...formData },
-                { headers: { Authorization: `Bearer ${token}` }
-            })
+                { token, notificationId, ...formData }
+            )
             setEdit(false)
             fetchNotification() // refresh after update
         } catch (e) {

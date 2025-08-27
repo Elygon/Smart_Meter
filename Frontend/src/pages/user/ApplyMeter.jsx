@@ -16,12 +16,7 @@ const ApplyMeter = () => {
         try {
             const token = localStorage.getItem('token')
             const response = await axios.post('http://localhost:4500/user_meter/apply',
-                { meterTech, meterType, address },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
+                { token, meterTech, meterType, address }
             )
       
             setMessage(response.data.msg || "Meter application submitted successfully!")

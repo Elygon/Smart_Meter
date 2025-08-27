@@ -11,12 +11,7 @@ const ManageUser = ({ userId }) => {
             try {
                 const token = localStorage.getItem("token") // Admin token
                 const res = await axios.post('http://localhost:4500/admin_user/user', // The backend endpoint
-                    { id: userId }, // send id in body
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
+                    { token, id: userId }, // send id in body
                 )
                 setUser(res.data)
             } catch (err) {

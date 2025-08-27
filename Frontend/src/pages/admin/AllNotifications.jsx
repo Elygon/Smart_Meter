@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate } from 'rect-router-dom'
+import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const AllNotifications = () => {
@@ -12,9 +12,9 @@ const AllNotifications = () => {
     const fetchNotifications = async () => {
         try {
             const token = localStorage.getItem("token") // admin token
-            const res = await axios.post('http://localhost:4500/admin_notication/view',{
-                headers: { Authorization: `Bearer ${token}` }
-            })
+            const res = await axios.post('http://localhost:4500/admin_notication/view',
+                { token }
+            )
             setNotifications(res.data)
         } catch (e) {
             setError('Error fetching notifications.')
@@ -44,10 +44,9 @@ const AllNotifications = () => {
 
         try {
             const token = localStorage.getItem("token") // admin token
-            await axios.post('http://localhost:4500/admin_notication/delete',{
-                headers: { Authorization: `Bearer ${token}` },
-                data: { notificationIds: selectedIds } // send all IDs in body
-            })
+            await axios.post('http://localhost:4500/admin_notication/delete',
+                { token, notificationIds: selectedIds } // send all IDs in body
+            )
             
             setSelectedIds([]) // clear selection
             fetchNotifications()
@@ -102,7 +101,7 @@ const AllNotifications = () => {
                                 <td>{n.type}</td>
                                 <td>{n.message.substring(0, 40)}...</td>
                                 <td>{n.createdBy}</td>
-                                <td>{newDate(n.createdAt).toLocaleString()}</td>
+                                <td>{new Date(n.createdAt).toLocaleString()}</td>
                                 <td>
                                     <button onClick={() => navigate(`/admin/notifications/${n._id}`)}>
                                         View

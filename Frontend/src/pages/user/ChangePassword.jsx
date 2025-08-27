@@ -28,12 +28,7 @@ const ChangePassword = () => {
         const token = localStorage.getItem("token") // User's JWT token   
 
         const res = await axios.post('http://localhost:4500/user_auth/change_password',
-          { currentPassword, newPassword },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`
-            },
-          }
+          { token, currentPassword, newPassword },
         )
 
         if (res.status === 200) {

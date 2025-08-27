@@ -25,13 +25,7 @@ const Contact = () => {
             const token = localStorage.getItem('token') // user token from login
 
             const res = await axios.post('http://localhost:4500/user_contact/send',
-                { reason, message },
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                }
+                { token, reason, message },   
             )
       
             setStatus("Message sent successfully.")

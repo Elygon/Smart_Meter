@@ -17,13 +17,7 @@ const Recharge = () => {
                 const token = localStorage.getItem("token")
 
                 const response = await axios.post('http://localhost:4500/user_meter/all',
-                    {},
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`,
-                            "Content-Type": "application/json"
-                        }
-                    }
+                    { token }
                 )
 
                 // If response is an object with meters array, adjust this:
@@ -49,16 +43,11 @@ const Recharge = () => {
 
                 const response = await axios.post('http://localhost:4500/user_recharge/request',
                     {
+                        token,
                         meterId,
                         amount,
                         paymentMethod,
                         reference: autoReference  // Auto-generated
-                    },
-                    {
-                        headers:{
-                            Authorization: `Bearer ${token}`,
-                            "Content-Type": "applcation/json"
-                        }
                     }
                 )
 

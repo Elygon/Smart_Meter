@@ -12,12 +12,7 @@ const ManageMeter = ({ meterId }) => {
         try {
             const token = localStorage.getItem("token") // Admin token
             const res = await axios.post('http://localhost:4500/admin_meter/specific', // The backend endpoint
-                { id: meterId }, // send id in body
-                {
-                    headers: {
-                         Authorization: `Bearer ${token}`
-                    }
-                }
+                { token, id: meterId } // send id in body
             )
             setMeter(res.data)
         } catch (err) {
@@ -36,8 +31,7 @@ const ManageMeter = ({ meterId }) => {
         try {
             const token = localStorage.getItem("token")
             const res = await axios.post('http://localhost:4500/admin_meter/update',
-                { meterId: id, status},
-                { headers: { Authorization: `Bearer ${token}` }}
+                { token, meterId: id, status}
             )
             setMessage(`Meter ${status} successfully.`)
             fetchMeter()
@@ -51,8 +45,7 @@ const ManageMeter = ({ meterId }) => {
         try {
             const token = localStorage.getItem("token")
             const res = await axios.post('http://localhost:4500/admin_meter/assign',
-                { meterId: id}, 
-                { headers: { Authorization: `Bearer ${token}` }}
+                { token, meterId: id}
             )
             setMessage(`Meter number ${res.data.meterNumber} assigned successfully.`)
             fetchMeter()
@@ -69,13 +62,12 @@ const ManageMeter = ({ meterId }) => {
         try {
             const token = localStorage.getItem("token")
             const res = await axios.post('http://localhost:4500/admin_meter/update',
-                { meterId: id, status: newStatus},
-                { headers: { Authorization: `Bearer ${token}` }}
+                { token, meterId: id, status: newStatus}
             )
             setMessage(`Meter updated to ${newStatus}.`)
             fetchMeter()
         } catch (e) {
-            alert("Failed to update status.")
+            alert("Failed to update meter status.")
         }
     }
 
