@@ -32,7 +32,7 @@ import RechargeHistory from './pages/admin/RechargeHistory'
 import AdminLogs from './pages/admin/ViewLogs'
 import CreateNotification from './pages/admin/CreateNotification'
 import AllNotifications from './pages/admin/AllNotifications'
-import Notification from './pages/admin/Notification'
+import AdminNotification from './pages/admin/AdminNotification'
 import ManageTickets from './pages/admin/ManageTickets'
 import ManageTicket from './pages/admin/ManageTicket'
 
@@ -74,7 +74,7 @@ const App = () => {
         <Route path="/admin/approve-recharges" element={<ApproveRecharges />} />
         <Route path="/admin/create-notification" element={<RequireAdmin><CreateNotification /></RequireAdmin>} />
         <Route path="/admin/all-notifications" element={<RequireAdmin><AllNotifications /></RequireAdmin>} />
-        <Route path="/admin/notification" element={<RequireAdmin><Notification /></RequireAdmin>} />
+        <Route path="/admin/notification" element={<RequireAdmin><AdminNotification /></RequireAdmin>} />
         <Route path="/admin/manage-tickets" element={<RequireAdmin><ManageTickets /></RequireAdmin>} />
         <Route path="/admin/manage-ticket" element={<RequireAdmin><ManageTicket /></RequireAdmin>} />
         <Route path="/admin/logs" element={<AdminLogs />} />

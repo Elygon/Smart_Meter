@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
-const Notification = ({ notificationId, goBack }) => {
+const AdminNotification = ({ notificationId, goBack }) => {
     const [notification, setNotification] = useState(null)
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState("")
@@ -124,4 +124,4 @@ const Notification = ({ notificationId, goBack }) => {
     )
 }
 
-export default Notification
+export default AdminNotification
