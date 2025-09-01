@@ -12,7 +12,7 @@ const rechargeSchema = new Schema({
     reference: {type: String, required: true}, //Unique transaction reference for tracking
     rechargeDate: {type: Date, default: Date.now}, //When the recharge occurred
     rechargedBy: {type: mongoose.Schema.Types.ObjectId, ref: "Admin", required: false}, //Admin that performed the recharge
-    status: {type: String, enum: ['pending', 'success', 'failed'], default: 'success'},
+    status: {type: String, enum: ['pending', 'success', 'failed'], default: 'pending'},
     deleted: {type: Boolean, default: false}
 }, {collection: 'Recharge', timestamps: true})
 

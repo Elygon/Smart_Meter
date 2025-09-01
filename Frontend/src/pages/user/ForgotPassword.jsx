@@ -41,4 +41,33 @@ const ForgotPassword = () => {
     )
 }
 
+
+// Simple inline styles
+  const styles = {
+    container: {
+      padding: '20px',
+      maxWidth: '400px',
+      margin: 'auto',
+      textAlign: 'center',
+      fontFamily: 'Arial, sans-serif'
+    },
+    form: {
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '10px'
+    },
+    input: {
+      padding: '10px',
+      fontSize: '16px'
+    },
+    button: {
+      padding: '10px',
+      background: '#4CAF50',
+      color: 'white',
+      border:'none',
+      fontSize: '16px',
+      cursor: 'pointer'
+    }
+}
+
 export default ForgotPassword

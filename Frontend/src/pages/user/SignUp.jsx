@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import api from '../../api/axios'
 
@@ -35,7 +35,7 @@ const SignUp = () => {
       return (
         <div style={{maxWidth: "400px", margin: "auto", padding: "20px" }}>
           <h2>Sign Up</h2>
-          {message && <p>{message}</p>}
+          {/*message && <p>{message}</p>*/}
           <form onSubmit={handleSignUp}>
             <input
              type="text"
@@ -70,12 +70,13 @@ const SignUp = () => {
                 <option value="female">Female</option>
             </select>
             <button type="submit">Sign Up</button>
+            {error && <p style={{ color: 'red' }}>{error}</p>}
         </form>
         <p style={{ marginTop: "10px" }}>
             Already have an account?{" "}
             <span
             style={{ color: "blue", cursor: "pointer" }}
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/user/login")}
             >
                 Login
             </span>

@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import api from '../../api/axios'
 
 const UserLogin = () => {
@@ -23,7 +24,7 @@ const UserLogin = () => {
         setError("Login failed. Please check your credentials.")
       } 
     } catch (e) {
-        setError(err.res?.data?.msg || "Something went wrong.")
+        setError(e.res?.data?.msg || "Something went wrong.")
       }
     }
 

@@ -1,5 +1,5 @@
-import React from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Navigate } from 'react-router-dom'
 
 // User pages
 import SignUp from './pages/user/SignUp'
@@ -27,9 +27,7 @@ import ManageUsers from './pages/admin/ManageUsers'
 import ManageUser from './pages/admin/ManageUser'
 import ManageMeters from './pages/admin/ManageMeters'
 import ManageMeter from './pages/admin/ManageMeter'
-import ApproveRecharges from './pages/admin/ApproveRecharges'
-import RechargeHistory from './pages/admin/RechargeHistory'
-import AdminLogs from './pages/admin/ViewLogs'
+/*import AdminLogs from './pages/admin/ViewLogs'*/
 import CreateNotification from './pages/admin/CreateNotification'
 import AllNotifications from './pages/admin/AllNotifications'
 import AdminNotification from './pages/admin/AdminNotification'
@@ -44,10 +42,13 @@ const App = () => {
   return (
     <Router>
       <Routes>
+        {/* Default redirect to login */}
+        <Route path="/" element={<Navigate to="/user/login" />} />
+
         {/* Public routes */}
         <Route path="/user/signup" element={<SignUp />} />
         <Route path="/user/login" element={<UserLogin />} />
-        <Route path="/user/forgot_password" element={<ForgotPassword />} />
+        <Route path="/user/forgot-password" element={<ForgotPassword />} />
         <Route path="/user/reset-password/:token" element={<ResetPassword />} />
         <Route path="/admin/login" element={<RequireAdmin><AdminLogin /></RequireAdmin>} />
 
@@ -71,13 +72,11 @@ const App = () => {
         <Route path="/admin/manage-user" element={<RequireAdmin><ManageUser /></RequireAdmin>} />
         <Route path="/admin/manage-meters" element={<RequireAdmin><ManageMeters /></RequireAdmin>} />
         <Route path="/admin/manage-meter" element={<RequireAdmin><ManageMeter /></RequireAdmin>} />
-        <Route path="/admin/approve-recharges" element={<ApproveRecharges />} />
         <Route path="/admin/create-notification" element={<RequireAdmin><CreateNotification /></RequireAdmin>} />
         <Route path="/admin/all-notifications" element={<RequireAdmin><AllNotifications /></RequireAdmin>} />
         <Route path="/admin/notification" element={<RequireAdmin><AdminNotification /></RequireAdmin>} />
         <Route path="/admin/manage-tickets" element={<RequireAdmin><ManageTickets /></RequireAdmin>} />
         <Route path="/admin/manage-ticket" element={<RequireAdmin><ManageTicket /></RequireAdmin>} />
-        <Route path="/admin/logs" element={<AdminLogs />} />
 
         {/* Access Denied Page */}
         <Route path="/access-denied" element={<AccessDenied />} />

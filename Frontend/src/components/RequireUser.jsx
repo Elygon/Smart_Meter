@@ -1,9 +1,8 @@
-import React from "react"
 import { Navigate } from "react-router-dom"
-import jwtDecode from "jwt-decode"
+import { jwtDecode } from "jwt-decode"
 
-const RequireUser = () => {
-    const token = localStorage.getItem("token")
+const RequireUser = ({ children }) => {
+    const token = localStorage.getItem("userToken") || localStorage.getItem("token")
 
     if (!token) {
         // If no token, redirect to user login page
@@ -20,6 +19,7 @@ const RequireUser = () => {
 
         // User access granted
         return children
+        
     } catch (e) {
         // Invalid token - force re-login
         return <Navigate to="/user/login" replace />
