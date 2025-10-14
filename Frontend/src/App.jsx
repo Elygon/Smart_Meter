@@ -4,6 +4,7 @@ import { Navigate } from 'react-router-dom'
 // User pages
 import SignUp from './pages/user/SignUp'
 import UserLogin from './pages/user/Login'
+import Profile from './pages/user/Profile'
 import ChangePassword from './pages/user/ChangePassword'
 import ForgotPassword from './pages/user/ForgotPassword'
 import ResetPassword from './pages/user/ResetPassword'
@@ -23,6 +24,7 @@ import MyTickets from './pages/user/MyTickets'
 //import Register from './pages/admin/Register' // only if supervisor insists
 import AdminLogin from './pages/admin/Login'
 import AdminDashboard from './pages/admin/Dashboard'
+import AdminProfile from './pages/admin/Profile'
 import ManageUsers from './pages/admin/ManageUsers'
 import ManageUser from './pages/admin/ManageUser'
 import ManageMeters from './pages/admin/ManageMeters'
@@ -101,6 +103,7 @@ const App = () => {
         <Route path="/user/reset-password" element={<ResetPassword />} />
         <Route path="/user/change-password" element={<ChangePassword />} />
         <Route path="/user/dashboard" element={<UserDashboard />} />
+        <Route path="/user/profile" elemeent={<Profile />} />
         <Route path="/user/apply" element={<ApplyMeter />} />
         <Route path="/user/view-meters" element={<ViewAllMeters />} />
         <Route path="/user/view-meter" element={<ViewMeter />} />
@@ -114,12 +117,16 @@ const App = () => {
         
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/profile" elemeent={<AdminProfile />} />
         <Route path="/admin/recharges" element={<Recharges />} />
         <Route path="/admin/create-notification" element={<CreateNotification />} />
         <Route path="/admin/all-notifications" element={<AllNotifications />} />
         <Route path="/admin/admin-notification" element={<AdminNotification />} />
         <Route path="/admin/manage-users" element={<ManageUsers />} />
         <Route path="/admin/manage-user" element={<ManageUser />} />
+        <Route path="/admin/manage-meters" element={<ManageMeters />} />
+        <Route path="/admin/manage-meter" element={<ManageMeter />} />
+        
 
       </Routes>
     </Router>

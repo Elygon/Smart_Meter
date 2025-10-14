@@ -1,85 +1,4 @@
 /*import React from "react"
-import { Link, Outlet } from "react-router-dom"
-import {
-    LayoutDashboard,
-    CreditCard,
-    FileText,
-    Lock,
-    Ticket,
-    LogOut
-} from "lucide-react" // icons
-
-const Dashboard = () => {
-    return (
-        <div className="flex h-screen bg-gray-100">
-            {/* Sidebar }
-            <aside className="w-64 bg-indigo-600 text-white flex flex-col">
-                <div className="p-4 text-2xl font-bold border-b border-indigo-500">
-                    PowerPay
-                </div>
-                <nav className="flex-1 p-4 space-y-3">
-                    <Link
-                      to="/dashboard"
-                      className="flex items-center gap-2 p-2 rounded-lg hover:bg-indigo-500"
-                    >
-                        <LayoutDashboard size={20} /> Dashboard
-                    </Link>
-                    <Link
-                      to="/dashboard/recharge"
-                      className="flex items-center gap-2 p-2 rounded-lg hover:bg-indigo-500"
-                    >
-                        <CreditCard size={20} /> Recharge
-                    </Link>
-                    <Link
-                      to="/dashboard/logs"
-                      className="flex items-center gap-2 p-2 rounded-lg hover:bg-indigo-500"
-                    >
-                        <FileText size={20} /> Usage Logs
-                    </Link>
-                    <Link
-                      to="/dashboard/tickets"
-                      className="flex items-center gap-2 p-2 rounded-lg hover:bg-indigo-500"
-                    >
-                        <Ticket size={20} /> My Tickets
-                    </Link>
-                    <Link
-                      to="/dashboard/change-password"
-                      className="flex items-center gap-2 p-2 rounded-lg hover:bg-indigo-500"
-                    >
-                        <Lock size={20} /> Change Password
-                    </Link>
-                </nav>
-                
-                <div className="p-4 border-t border-indigo-500">
-                    <button className="flex items-center gap-2 w-full p-2 rounded-lg hover:bg-indigo-500">
-                        <LogOut size={20} /> Logout
-                    </button>
-                </div>
-            </aside>
-            
-            {/* Main content *}
-            <div className="flex-1 flex flex-col">
-                {/* Top Navbar *}
-                <header className="h-16 bg-white shadow flex items-center justify-between px-6">
-                    <h1 className="text-xl font-semibold text-gray-800">User Dashboard</h1>
-                    <p className="text-gray-600">Welcome back 👋</p>
-                </header>
-                
-                {/* Content Area /}
-                <main className="flex-1 p-6 overflow-y-auto">
-                    <Outlet />
-                </main>
-            </div>
-        </div>
-    )
-}
-
-export default Dashboard
-*/
-
-
-
-import React from "react"
 import { Link } from "react-router-dom"
 import {
     LayoutDashboard,
@@ -106,7 +25,7 @@ const UserDashboard = () => {
     
     return (
         <div className="flex min-h-screen bg-gray-50">
-            {/* Sidebar */}
+            {/* Sidebar }
             <aside className="w-64 bg-[#0f172a] text-gray-200 flex flex-col p-6 rounded-r-3xl">
                 <h1 className="text-2xl font-bold mb-8">Dashboard</h1>
                 <nav className="space-y-3">
@@ -174,7 +93,7 @@ const UserDashboard = () => {
             </div>
         </aside>
         
-        {/* Main content */}
+        {/* Main content }
         <main className="flex-1 p-10">
             <h2 className="text-2xl font-bold mb-2">
                 Welcome back, {user.fullname}!
@@ -183,7 +102,7 @@ const UserDashboard = () => {
                 Here’s a quick overview of your smart meter account.
             </p>
             
-            {/* Summary cards */}
+            {/* Summary cards }
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-white shadow-sm rounded-xl p-5">
                     <p className="text-gray-500 text-sm">Total Units Consumed</p>
@@ -199,7 +118,7 @@ const UserDashboard = () => {
                 </div>
             </div>
                 
-            {/* Recent Readings */}
+            {/* Recent Readings *}
             <div className="bg-white rounded-xl shadow-sm mb-8">
                 <div className="px-6 py-4 border-b border-gray-100">
                     <h3 className="text-lg font-semibold">Recent Meter Readings</h3>
@@ -226,7 +145,7 @@ const UserDashboard = () => {
                     </div>
                 </div>
                 
-                {/* Quick Actions */}
+                {/* Quick Actions *}
                 <h3 className="text-xl font-semibold mb-4">Quick Actions</h3>
                 <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
                     {[
@@ -271,6 +190,163 @@ const UserDashboard = () => {
                         </Link>
                     ))}
                 </div>
+            </main>
+        </div>
+    )
+}
+
+export default UserDashboard
+*/
+
+
+import React, { useEffect, useState } from "react"
+import { Link } from "react-router-dom"
+import axios from "axios"
+import {
+    LayoutDashboard,
+    Clock,
+    FileText,
+    Bell,
+    MessageSquare,
+    CreditCard,
+    Power,
+    User,
+    LogOut,
+    Lock
+} from "lucide-react"
+
+const UserDashboard = () => {
+    const [user, setUser] = useState(null)
+    const [error, setError] = useState("")
+    
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const token = localStorage.getItem("token")
+                if (!token) {
+                    setError("No token found. Please log in again.")
+                    return
+                }
+                
+                const res = await axios.post("http://localhost:4500/user_profile", {
+                    token
+                })
+                
+                if (res.data.status === "ok") {
+                    setUser(res.data.user)
+                } else {
+                    setError("Failed to load profile")
+                }
+            } catch (err) {
+                console.error(err)
+                setError("Error connecting to backend")
+            }
+        }
+        
+        fetchProfile()
+    }, [])
+    
+    if (error) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <p className="text-red-600 font-semibold">{error}</p>
+            </div>
+        )
+    }
+    
+    if (!user) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <p className="text-gray-600">Loading your dashboard...</p>
+            </div>
+        )
+    }
+    
+    return (
+        <div className="flex min-h-screen bg-gray-50">
+            {/* Sidebar */}
+            <aside className="w-64 bg-[#0f172a] text-gray-200 flex flex-col p-6 rounded-r-3xl">
+                <h1 className="text-2xl font-bold mb-8">Dashboard</h1>
+                <nav className="space-y-3">
+                    <Link
+                      to="/user/dashboard"
+                      className="flex items-center gap-3 bg-[#1e293b] px-4 py-2 rounded-xl font-medium"
+                    >
+                        <LayoutDashboard size={18} /> Dashboard
+                    </Link>
+                    <Link
+                      to="/user/recharge"
+                      className="flex items-center gap-3 hover:bg-[#1e293b] px-4 py-2 rounded-xl"
+                    >
+                        <CreditCard size={18} /> Recharge
+                    </Link>
+                    <Link
+                      to="/user/recharge-history"
+                      className="flex items-center gap-3 hover:bg-[#1e293b] px-4 py-2 rounded-xl"
+                    >
+                        <Clock size={18} /> Recharge History
+                    </Link>
+                    <Link
+                      to="/user/logs"
+                      className="flex items-center gap-3 hover:bg-[#1e293b] px-4 py-2 rounded-xl"
+                    >
+                        <FileText size={18} /> Logs
+                    </Link>
+                    <Link
+                      to="/user/my-tickets"
+                      className="flex items-center gap-3 hover:bg-[#1e293b] px-4 py-2 rounded-xl"
+                    >
+                        <MessageSquare size={18} /> Tickets
+                    </Link>
+                    <Link
+                      to="/user/contact"
+                      className="flex items-center gap-3 hover:bg-[#1e293b] px-4 py-2 rounded-xl"
+                    >
+                        <Power size={18} /> Contact Support
+                    </Link>
+                    <Link
+                      to="/user/notification"
+                      className="flex items-center gap-3 hover:bg-[#1e293b] px-4 py-2 rounded-xl"
+                    >
+                        <Bell size={18} /> Notifications
+                    </Link>
+                    <Link
+                      to="/user/profile"
+                      className="flex items-center gap-3 hover:bg-[#1e293b] px-4 py-2 rounded-xl"
+                    >
+                        <User size={18} /> Profile
+                    </Link>
+                    <Link
+                      to="/user/change-password"
+                      className="flex items-center gap-3 hover:bg-[#1e293b] px-4 py-2 rounded-xl"
+                    >
+                        <Lock size={18} /> Change Password
+                    </Link>
+                </nav>
+                
+                <div className="mt-auto pt-6 border-t border-gray-700">
+                    <button
+                        onClick={() => {
+                            localStorage.removeItem("token")
+                            window.location.href = "/login"
+                        }}
+                        className="flex items-center gap-2 text-red-400 hover:text-red-300 transition"
+                    >
+                        <LogOut size={18} /> Logout
+                    </button>
+                </div>
+            </aside>
+            
+            {/* Main Content */}
+            <main className="flex-1 p-10">
+                <h2 className="text-2xl font-bold mb-2">
+                    Welcome back, {user.fullname || "User"}!
+                </h2>
+                <p className="text-gray-600 mb-8">
+                    Here's a quick overview of your smart meter account.
+                </p>
+                
+                {/* You can keep your summary cards & quick actions here */}
             </main>
         </div>
     )
