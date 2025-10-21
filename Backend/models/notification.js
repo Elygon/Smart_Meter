@@ -3,6 +3,7 @@ const Schema = mongoose.Schema
 
 const notificationSchema = new Schema({
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
+    isBroadcast: {type: Boolean, default: false}, // false = sent to specific user, true = sent to all users
     title: String,
     message: String,
     type: {type: String, enum: ['info', 'alert', 'warning', 'update'], default: 'info'}, //Type of notification

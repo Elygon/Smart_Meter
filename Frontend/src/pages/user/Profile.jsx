@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react"
+import axios from "axios"
 
 const Profile = () => {
     const [user, setUser] = useState(null)
@@ -15,22 +16,13 @@ const Profile = () => {
                     return
                 }
                 
-                const res = await axios.post("http://localhost:4500/user_profile/", {
-                    method: "POST",
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }
+                const res = await axios.post("http://localhost:4500/user_profile", {
+                    token: localStorage.getItem("token")
                 })
                 
-                const data = await res.json()
-                
-                if (res.ok) {
-                    setUser(data.user)
-                } else {
-                    setError(data.message || "Failed to load profile.")
-                }
+                setUser(res.data.user)
             } catch (err) {
+                console.error("Error fetching profile:", err)
                 setError("Unable to connect to the server.")
             } finally {
                 setLoading(false)
@@ -67,22 +59,22 @@ const Profile = () => {
                         <p className="text-gray-400 text-sm">Full Name</p>
                         <p className="text-lg font-medium">{user?.fullname}</p>
                     </div>
-                    
                     <div>
                         <p className="text-gray-400 text-sm">Email</p>
                         <p className="text-lg font-medium">{user?.email}</p>
                     </div>
-                    
                     <div>
                         <p className="text-gray-400 text-sm">Phone Number</p>
-                        <p className="text-lg font-medium">{user?.phone_no || "Not provided"}</p>
+                        <p className="text-lg font-medium">
+                            {user?.phone_no || "Not provided"}
+                        </p>
                     </div>
-                    
                     <div>
                         <p className="text-gray-400 text-sm">Gender</p>
-                        <p className="text-lg font-medium">{user?.gender || "Not specified"}</p>
+                        <p className="text-lg font-medium">
+                            {user?.gender || "Not specified"}
+                        </p>
                     </div>
-                    
                     <div>
                         <p className="text-gray-400 text-sm">Role</p>
                         <p className="text-lg font-medium capitalize">{user?.role}</p>

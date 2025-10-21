@@ -200,7 +200,7 @@ export default UserDashboard
 
 
 import React, { useEffect, useState } from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate} from "react-router-dom"
 import axios from "axios"
 import {
     LayoutDashboard,
@@ -218,6 +218,7 @@ import {
 const UserDashboard = () => {
     const [user, setUser] = useState(null)
     const [error, setError] = useState("")
+    const navigate = useNavigate()
     
     useEffect(() => {
         const fetchProfile = async () => {
@@ -328,7 +329,7 @@ const UserDashboard = () => {
                     <button
                         onClick={() => {
                             localStorage.removeItem("token")
-                            window.location.href = "/login"
+                            navigate("/user/login") // navigate to correct route
                         }}
                         className="flex items-center gap-2 text-red-400 hover:text-red-300 transition"
                     >
@@ -340,13 +341,60 @@ const UserDashboard = () => {
             {/* Main Content */}
             <main className="flex-1 p-10">
                 <h2 className="text-2xl font-bold mb-2">
-                    Welcome back, {user.fullname || "User"}!
+                    Welcome back, {user.fullname || "User"} ⚡
                 </h2>
                 <p className="text-gray-600 mb-8">
                     Here's a quick overview of your smart meter account.
                 </p>
                 
                 {/* You can keep your summary cards & quick actions here */}
+
+
+                {/* Quick Actions */}
+                <h3 className="text-xl font-semibold mb-4">Quick Actions</h3>
+                <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+                    {[
+                        {
+                            to: "/user/apply",
+                            title: "Apply for Meter",
+                            desc: "Request a new prepaid or postpaid smart meter."
+                        },
+                        {
+                            to: "/user/view-meters",
+                            title: "View All Meters",
+                            desc: "See a list of all meters linked to your account."
+                        },
+                        {
+                            to: "/user/recharge",
+                            title: "Recharge Meter",
+                            desc: "Buy tokens or recharge your IoT meter balance."
+                        },
+                        {
+                            to: "/user/recharge-history",
+                            title: "Recharge History",
+                            desc: "View all your recharge history and its details."
+                        },
+                        {
+                            to: "/user/logs",
+                            title: "Usage Logs",
+                            desc: "Check how much energy you've consumed."
+                        },
+                        {
+                            to: "/user/contact",
+                            title: "Contact Support",
+                            desc: "Send inquiries or complaints."
+                        },
+                    ].map((item, i) => (
+                        <Link
+                          key={i}
+                          to={item.to}
+                          className="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition"
+                        >
+                            <h4 className="text-lg font-bold mb-1">{item.title}</h4>
+                            <p className="text-gray-600 text-sm">{item.desc}</p>
+                        </Link>
+                    ))}
+                </div>
             </main>
         </div>
     )

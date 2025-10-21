@@ -39,7 +39,7 @@ const AdminDashboard = ({ admin }) => {
             {/* Main Content */}
             <main className="flex-1 p-8">
                 <h2 className="text-2xl font-semibold mb-2">
-                    Welcome back, {admin ? admin.fullname : "Admin"}!
+                    Welcome back, {admin?.fullname || "Admin"} ⚡
                 </h2>
                 <p className="text-gray-600 mb-8">
                     Manage users, meters, notifications, and monitor system activity.

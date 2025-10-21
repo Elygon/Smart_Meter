@@ -4,7 +4,7 @@ import axios from "axios"
 const RechargeHistory = () => {
     const [recharges, setRecharges] = useState([])
     const [selectedRecharge, setSelectedRecharge] = useState(null)
-    const [message, setMessage] = useState("")
+    const message = useState("")
     const [error, setError] = useState("")
 
     // Fetch recharge history

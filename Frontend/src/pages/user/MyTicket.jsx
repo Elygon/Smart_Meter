@@ -1,44 +1,47 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
+import React, { useState, useEffect } from "react"
+import { useLocation } from "react-router-dom"
+import axios from "axios"
 
-const MyTicket = ({ ticketId }) => {
-  const [ticket, setTicket] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+const MyTicket = () => {
+  const location = useLocation()
+  const ticketId = location.state?.ticketId  // <-- get ticketId from the router state
+  const [ticket, setTicket] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
 
   useEffect(() => {
     const fetchTicket = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token = localStorage.getItem("token")
         const res = await axios.post(
           "http://localhost:4500/user_contact/view/",
           { token, contactId: ticketId }
-        );
-        setTicket(res.data);
+        )
+        setTicket(res.data.ticket || res.data.inquiry)
       } catch (e) {
-        console.error("Error fetching ticket:", e);
-        setError("Failed to load ticket.");
+        console.error("Error fetching ticket:", e)
+        setError("Failed to load ticket.")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchTicket();
-  }, [ticketId]);
+    fetchTicket()
+  }, [ticketId])
 
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <p className="text-gray-600 text-lg">Loading your ticket...</p>
       </div>
-    );
+    )
 
   if (error)
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <p className="text-red-500 text-lg">{error}</p>
       </div>
-    );
+    )
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -117,7 +120,7 @@ const MyTicket = ({ ticketId }) => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MyTicket;
+export default MyTicket

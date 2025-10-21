@@ -28,7 +28,7 @@ router.post('/', async(req, res) => {
         }
 
         // Return admin info
-        return res.status(200).send({status: 'ok', Ladmin})
+        return res.status(200).send({status: 'ok', admin: Ladmin})
     } catch (e) {
         if (e.name === "JsonWebTokenError") {
             return res.status(400).send({status: 'error', msg:'Token verification failed', error: e.message})

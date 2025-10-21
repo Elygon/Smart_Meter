@@ -1,43 +1,43 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react"
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
 
 const MyTickets = () => {
-  const [tickets, setTickets] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  const [tickets, setTickets] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+  const navigate = useNavigate()
 
   useEffect(() => {
     const fetchTickets = async () => {
       try {
         const token = localStorage.getItem("token");
-        const res = await axios.post("http://localhost:4500/user_contact/all", { token });
-        setTickets(res.data);
+        const res = await axios.post("http://localhost:4500/user_contact/all", { token })
+        setTickets(res.data.inquiries);
       } catch (e) {
-        console.error("Error fetching tickets:", e);
-        setError("Failed to load tickets. Try again later.");
+        console.error("Error fetching tickets:", e)
+        setError("Failed to load tickets. Try again later.")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchTickets();
-  }, []);
+    fetchTickets()
+  }, [])
 
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <p className="text-gray-600 text-lg">Loading your tickets...</p>
       </div>
-    );
+    )
 
   if (error)
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <p className="text-red-500 text-lg">{error}</p>
       </div>
-    );
+    )
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -101,7 +101,7 @@ const MyTickets = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default MyTickets;
+export default MyTickets

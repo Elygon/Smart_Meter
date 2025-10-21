@@ -10,9 +10,9 @@ const Contact = require('../models/contact')
 
 // User sends a inquiry ticket
 router.post('/send', async(req, res) => {
-    const {token, name, email, reason, message} = req.body
+    const {token, reason, message} = req.body
 
-    if(!token || !name || !email || !reason || !message) {
+    if(!token || !reason || !message) {
         return res.status(400).send({status: 'error', msg: 'All fields must be filled'})
     }
 
@@ -22,8 +22,6 @@ router.post('/send', async(req, res) => {
 
         const inquiry = new Contact()
         inquiry.user = user._id
-        inquiry.name = name
-        inquiry.email = email
         inquiry.reason = reason
         inquiry.message = message
 
@@ -52,7 +50,7 @@ router.post('/all', async(req, res) => {
         const user = jwt.verify(token, process.env.JWT_SECRET)
 
         // Find all inquiries for this user
-        const inquiries = await Contact.find({user: user.id}).sort({ createdAt: -1})
+        const inquiries = await Contact.find({user: user._id}).sort({ createdAt: -1})
 
         if (!inquiries.length) {
             return res.status(400).send({ status: 'error', msg: 'No inquiries found.'})
@@ -82,7 +80,7 @@ router.post('/view', async(req, res) => {
         const user = jwt.verify(token, process.env.JWT_SECRET)
 
         // Find the inquiry
-        const inquiry = await Contact.findOne({_id: contactId, user: user.id})
+        const inquiry = await Contact.findOne({_id: contactId, user: user._id})
 
         if (!inquiry) {
             return res.status(400).send({ status: 'error', msg: 'Inquiry not found.'})

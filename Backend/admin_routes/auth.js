@@ -12,11 +12,17 @@ const Admin = require('../models/admin')
 
 //endpoint to Register
 router.post('/register', async(req, res) =>{
-    const {fullname, email, phone_no, password, gender} = req.body
-    if(!fullname || !email || !phone_no || !password)
+    const {fullname, email, phone_no, password, confirm_password, gender} = req.body
+    if(!fullname || !email || !phone_no || !password || !confirm_password)
         return res.status(400).send({status: 'error', msg: 'All fields must be filled'})
 
+    // Start try block
     try {
+        //Confirm passwords match
+        if (password !== confirm_password) {
+            return res.status(400).send({status: 'error', msg: 'Password mismatch'})
+        }
+
         const check = await Admin.findOne({email: email})
         if(check)
             return res.status(200).send({status: 'ok', msg: 'Admin already exists'})
@@ -30,6 +36,7 @@ router.post('/register', async(req, res) =>{
         admin.email = email
         admin.phone_no = phone_no
         admin.password = hashedpassword
+        admin.confirm_password = hashedpassword
 
         //Only assigned gender if provided
         if (gender) {

@@ -106,12 +106,12 @@ const App = () => {
         <Route path="/user/profile" elemeent={<Profile />} />
         <Route path="/user/apply" element={<ApplyMeter />} />
         <Route path="/user/view-meters" element={<ViewAllMeters />} />
-        <Route path="/user/view-meter" element={<ViewMeter />} />
+        <Route path="/user/ViewMeter" element={<ViewMeter />} />
         <Route path="/user/recharge" element={<Recharge />} />
         <Route path="/user/recharge-history" element={<RechargeHistory />} />
         <Route path="/user/logs" element={<Logs />} />
         <Route path="/user/my-tickets" element={<MyTickets />} />
-        <Route path="/user/my-ticket" element={<MyTicket />} />
+        <Route path="/user/MyTicket" element={<MyTicket />} />
         <Route path="/user/contact" element={<Contact />} />
         <Route path="/user/notification" element={<Notification />} />
         

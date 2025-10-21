@@ -1,59 +1,59 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React, { useEffect, useState } from "react"
+import axios from "axios"
 
 const Notification = () => {
-  const [notifications, setNotifications] = useState([]);
-  const [selectedNotification, setSelectedNotification] = useState(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [notifications, setNotifications] = useState([])
+  const [selectedNotification, setSelectedNotification] = useState(null)
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(true)
 
   // Fetch all notifications on page load
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const res = await axios.post("http://localhost:4500/user_notification/all", { token });
-        setNotifications(res.data);
+        const token = localStorage.getItem("token")
+        const res = await axios.post("http://localhost:4500/user_notification/all", { token })
+        setNotifications(res.data.notifications || [])
       } catch (err) {
-        console.error("Error fetching notifications:", err);
-        setError("Failed to load notifications.");
+        console.error("Error fetching notifications:", err)
+        setError("Failed to load notifications.")
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
+    }
 
-    fetchAll();
-  }, []);
+    fetchAll()
+  }, [])
 
   // Fetch a single notification when clicked
   const viewNotification = async (id) => {
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token")
       const res = await axios.post("http://localhost:4500/user_notification/single", {
         token,
-        notificationId: id,
-      });
-      setSelectedNotification(res.data);
-      setError("");
+        id,
+      })
+      setSelectedNotification(res.data.notification || [])
+      setError("")
     } catch (err) {
-      console.error("Error fetching single notification:", err);
-      setError("Failed to load notification details.");
+      console.error("Error fetching single notification:", err)
+      setError("Failed to load notification details.")
     }
-  };
+  }
 
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <p className="text-gray-600 text-lg">Loading notifications...</p>
       </div>
-    );
+    )
 
   if (error)
     return (
       <div className="flex items-center justify-center min-h-screen bg-gray-50">
         <p className="text-red-500 text-lg">{error}</p>
       </div>
-    );
+    )
 
   return (
     <div className="flex min-h-screen bg-gray-50">
@@ -117,7 +117,7 @@ const Notification = () => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
 export default Notification;

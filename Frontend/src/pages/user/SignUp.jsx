@@ -7,6 +7,7 @@ const SignUp = () => {
   const [fullname, setFullname] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [confirmPassword, setConfirmPassword] = useState("")
   const [phoneNo, setPhoneNo] = useState("")
   const [gender, setGender] = useState("")
   const [error, setError] = useState("")
@@ -22,16 +23,17 @@ const SignUp = () => {
         fullname,
         email,
         password,
+        confirm_password: confirmPassword,
         phone_no: phoneNo,
         gender,
       })
 
-      if (res.status === 200 || res.data?.msg) {
+      if (res.data?.status === "ok") {
         // success
         alert(res.data?.msg || "Signup successful! Please login.")
         navigate("/user/login")
       } else {
-        setError("Signup failed. Please try again.")
+        setError(res.data?.msg || "Signup failed. Please try again.")
       }
     } catch (err) {
       setError(err.response?.data?.msg || "Something went wrong.")
@@ -103,6 +105,20 @@ const SignUp = () => {
                 placeholder="Choose a password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Confirm password
+              </label>
+              <input
+                type="password"
+                placeholder="Confirm your password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
                 className="w-full px-3 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />

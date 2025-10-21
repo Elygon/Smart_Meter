@@ -22,7 +22,8 @@ router.post('/all', async(req, res) => {
         const user = jwt.verify(token, process.env.JWT_SECRET)
 
         //Fetch all notifications sent to the user or to all users
-        const notifications = await Notification.find({ $or: [{user: user._id}, {user: "all"}], }).sort({createdAt: -1 })
+        const notifications = await Notification.find({ $or: [{user: user._id}, {isBroadcast: true} // a boolean field for all users
+        ], }).sort({createdAt: -1 })
 
         if (!notifications || notifications.length === 0) {
             return res.status(400).send({status: "error", msg: "No notifications found"})

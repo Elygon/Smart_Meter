@@ -10,13 +10,19 @@ const User = require('../models/user')
 
 //endpoint to Sign Up
 router.post('/signup', async(req, res) =>{
-    const {fullname, email, phone_no, password, gender} = req.body
+    const {fullname, email, phone_no, password, confirm_password, gender} = req.body
 
-    if(!fullname || !email || !phone_no || !password)
+    if(!fullname || !email || !phone_no || !password || !confirm_password)
         return res.status(400).send({status: 'error', msg: 'All fields must be filled'})
 
-    //Check if user already exists
+    // Start try block
     try {
+        //Confirm passwords match
+        if (password !== confirm_password) {
+            return res.status(400).send({status: 'error', msg: 'Password mismatch'})
+        }
+        
+        //Check if user already exists
         const check = await User.findOne({email: email})
         if(check) {
             return res.status(200).send({status: 'ok', msg: 'An account with this email already exists'})
@@ -31,6 +37,8 @@ router.post('/signup', async(req, res) =>{
         user.email = email
         user.phone_no = phone_no
         user.password = hashedpassword
+        user.confirm_password = hashedpassword
+
 
         //Only assigned gender if provided
         if (gender) {
