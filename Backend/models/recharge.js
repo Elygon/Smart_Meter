@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const rechargeSchema = new Schema({
     user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true},
-    meter: {type: mongoose.Schema.Types.ObjectId, ref: 'SmartMeter', // The meter being recharged
+    meter: {type: mongoose.Schema.Types.ObjectId, ref: 'smartMeters', // The meter being recharged
         required: true},
     token: {type: String}, // Optional for STS meters
     amount: {type: Number, required: true}, //Amount being recharged

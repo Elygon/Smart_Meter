@@ -6,7 +6,6 @@ const adminSchema = new Schema({
     email: String, 
     phone_no: String,
     password: String,
-    confirm_password: String,
     role: {type: String, default: "admin"},
     gender: String,
     img_id: String,

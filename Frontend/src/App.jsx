@@ -103,7 +103,7 @@ const App = () => {
         <Route path="/user/reset-password" element={<ResetPassword />} />
         <Route path="/user/change-password" element={<ChangePassword />} />
         <Route path="/user/dashboard" element={<UserDashboard />} />
-        <Route path="/user/profile" elemeent={<Profile />} />
+        <Route path="/user/profile" element={<Profile />} />
         <Route path="/user/apply" element={<ApplyMeter />} />
         <Route path="/user/view-meters" element={<ViewAllMeters />} />
         <Route path="/user/ViewMeter" element={<ViewMeter />} />

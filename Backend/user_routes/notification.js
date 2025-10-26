@@ -64,4 +64,6 @@ router.post('/single', async(req, res) => {
         return res.status(500).send({status: 'error', msg:'Failed to retrieve the notification', error: e.message})
     }  
 })
+
+
 module.exports = router

@@ -22,19 +22,19 @@ router.post('/all', async(req, res) => {
         //Verify the user's token
         const user = jwt.verify(token, process.env.JWT_SECRET)
 
-        const meter = await Smartmeter.findOne({user: user._id})
+        // Fetch all meters for this user
+        const meters = await SmartMeter.find({user: user._id})
 
-        if (!meter) {
-            return res.status(400).send({status: "error", msg: "No smartmeter found for this meter."})
+        if (!meters || meters.length === 0) {
+            return res.status(200).send({status: "ok", logs: []}) // No meters, return empty logs
         }
 
-        const logs = await Log.find({meter: meter._id}).sort({createdAt: -1})
+        const meterIds = meters.map(m => m.id)
 
-        if (!logs || logs.length === 0) {
-            return res.status(400).send({status: "error", msg: "No logs."})
-        }
+        // Fetch logs for all user's meters
+        const logs = await Log.find({meter: { $in: meterIds }}).sort({createdAt: -1})
 
-        return res.status(200).send({status: "ok", logs})
+        return res.status(200).send({status: "ok", logs}) // logs may be empty array if none exist
     } catch (e) {
         if (e.name === "JsonWebTokenError") {
             return res.status(400).send({status: 'error', msg:'Token verification failed', error: e.message})
@@ -56,9 +56,15 @@ router.post('/view', async(req, res) => {
         //Verify the user's token
         const user = jwt.verify(token, process.env.JWT_SECRET)
 
-        const log = await Log.findById(id).populate("meter")
+        const log = await Log.findById(id)
 
-        if (!log || !log.meter || log.meter.user.toString() !== user._id.toString()) {
+        if (!log) {
+            return res.status(400).send({status: 'error', msg: 'Log not found.'})
+        }
+
+        const meter = await SmartMeter.findById(log.meter) // fetch the meter seperately
+
+        if(!meter || meter.user.toString() !== user._id.toString()) {
             return res.status(400).send({status: 'error', msg: 'Log not found or not yours.'})
         }
 

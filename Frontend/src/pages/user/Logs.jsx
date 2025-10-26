@@ -4,28 +4,29 @@ import axios from "axios"
 const Logs = () => {
     const [logs, setLogs] = useState([])
     const [selectedLog, setSelectedLog] = useState(null)
-    const [token] = useState(localStorage.getItem("token") || "")
     const [message, setMessage] = useState("")
     
     // Fetch all logs on page load
     useEffect(() => {
         const fetchLogs = async () => {
             try {
+                const token = localStorage.getItem("token")
                 const res = await axios.post("http://localhost:4500/user_log/all", { token })
-                setLogs(Array.isArray(res.data) ? res.data : res.data.logs || [])
+                setLogs(res.data.logs || [])
             } catch (e) {
                 console.error("Error fetching logs:", e)
                 setMessage("Failed to fetch logs. Try again.")
             }
         }
         fetchLogs()
-    }, [token])
+    }, [])
     
     // Fetch a single log when clicked
     const viewLog = async (logId) => {
         try {
-            const res = await axios.post("http://localhost:4500/user_log/view", { token, logId })
-            setSelectedLog(res.data)
+            const token = localStorage.getItem("token")
+            const res = await axios.post("http://localhost:4500/user_log/view", { token, id: logId })
+            setSelectedLog(res.data.log || [])
             setMessage("")
         } catch (e) {
             console.error("Error fetching log:", e)
@@ -70,7 +71,7 @@ const Logs = () => {
                                     <div className="text-sm text-gray-700">
                                         <p>
                                             <span className="font-semibold">Date:</span>{" "}
-                                            {new Date(log.createdAt).toLocaleString()}
+                                            {new Date(log.timestamp).toLocaleString()}
                                         </p>
                                         <p>
                                             <span className="font-semibold">Usage:</span>{" "}
@@ -103,7 +104,15 @@ const Logs = () => {
                                 </p>
                                 <p>
                                     <span className="font-semibold">Meter ID:</span>{" "}
-                                    {selectedLog.meterId}
+                                    {selectedLog.meter}
+                                </p>
+                                <p>
+                                    <span className="font-semibold">Description:</span>{" "}
+                                    {selectedLog.description}
+                                </p>
+                                <p>
+                                    <span className="font-semibold">Balance:</span>{" "}
+                                    {selectedLog.balance}
                                 </p>
                                 <p>
                                     <span className="font-semibold">Energy Usage:</span>{" "}
@@ -115,7 +124,7 @@ const Logs = () => {
                                 </p>
                                 <p>
                                     <span className="font-semibold">Date:</span>{" "}
-                                    {new Date(selectedLog.createdAt).toLocaleString()}
+                                    {new Date(selectedLog.timestamp).toLocaleString()}
                                 </p>
                             </div>
                         </div>

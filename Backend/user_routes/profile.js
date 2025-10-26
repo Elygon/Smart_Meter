@@ -21,9 +21,10 @@ router.post('/', async(req, res) => {
         //Verify the user's token
         const user = jwt.verify(token, process.env.JWT_SECRET)
 
+        
         //Find user in DB
         const Luser = await User.findById(user._id).select("-password")
-        if (!user) {
+        if (!Luser) {
             return res.status(400).send({status: "error", msg: "User not found"})
         }
 

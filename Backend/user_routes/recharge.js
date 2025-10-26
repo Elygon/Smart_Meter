@@ -29,7 +29,7 @@ router.post('/request', async(req, res) => {
         }
 
         // Ensure user owns the meter
-        if (meter.user.toString() !== user._id) {
+        if (meter.user.toString() !== user._id.toString()) {
             return res.status(400).send({status: 'error', msg: 'Unauthorized: This meter does not belong to you'}) 
         }
 
@@ -69,13 +69,15 @@ router.post('/all', async(req, res) =>{
         const user = jwt.verify(token, process.env.JWT_SECRET)
 
         //Fetch user's meter
-        const meter = await SmartMeter.findOne({user: user._id})
+        const meters = await SmartMeter.find({user: user._id})
 
-        if (!meter) {
+        if (!meters || meters.length === 0) {
             return res.status(400).send({status: "error", msg: "No smart meter not found for this user"})
         }
 
-        const recharges = await Recharge.find({meter: meter._id}).sort({createdAt: -1})
+        const meterIds = meters.map(m => m._id)
+
+        const recharges = await Recharge.find({meter: {$in: meterIds}}).sort({createdAt: -1})
 
         if (!recharges || recharges.length === 0) {
             return res.status(400).send({status: "error", msg: "No recharge records found"})
@@ -94,7 +96,7 @@ router.post('/all', async(req, res) =>{
 router.post('/view', async(req, res) => {
     const {token, id} = req.body
 
-    if(!token, id) {
+    if(!token || !id) {
         return res.status(400).send({status: 'error', msg: 'All fields must be provided'})
     }
 
@@ -104,7 +106,7 @@ router.post('/view', async(req, res) => {
 
         const recharge = await Recharge.findById(id).populate("meter")
 
-        if (!recharge || !recharge.meter.user.toString() !== user._id.toString()) {
+        if (!recharge || recharge.meter.user.toString() !== user._id.toString()) {
             return res.status(400).send({status: "error", msg: "Recharge not found or not yours"})
         }
 
@@ -137,7 +139,7 @@ router.post('/logs', async(req, res) => {
             return res.status(400).send({status: 'error', msg: 'User not found.'})
         }
 
-        const recharges = await Recharge.find({user: user_id}).populate("rechargeBy", "fullname")
+        const recharges = await Recharge.find({user: user_id}).populate("rechargedBy", "fullname")
 
         return res.status(200).send({status: 'success', user: user.fullname, recharges})
     } catch (e) {

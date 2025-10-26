@@ -29,9 +29,9 @@ const RechargeHistory = () => {
             const token = localStorage.getItem("token")
             const res = await axios.post("http://localhost:4500/user_recharge/view", {
                 token,
-                rechargeId: id,
+                id,
             })
-            setSelectedRecharge(res.data)
+            setSelectedRecharge(res.data.recharge)
             setError("")
         } catch (e) {
             console.error("Error fetching recharge:", e)
@@ -115,7 +115,7 @@ const RechargeHistory = () => {
                                 </p>
                                 <p>
                                     <span className="font-semibold">Meter ID:</span>{" "}
-                                    {selectedRecharge.meterId}
+                                    {selectedRecharge.meter?._id || "N/A"}
                                 </p>
                                 <p>
                                     <span className="font-semibold">Amount:</span> ₦
