@@ -41,6 +41,7 @@ app.use('/user_contact', require('./user_routes/contact'))
 //admin routes
 app.use('/admin_auth', require('./admin_routes/auth'))
 app.use('/admin_profile', require('./admin_routes/profile'))
+app.use('/admin_dashboard', require('./admin_routes/dashboard'))
 app.use('/admin_meter', require('./admin_routes/meter'))
 app.use('/admin_log', require('./admin_routes/log'))
 app.use('/admin_notification', require('./admin_routes/notification'))

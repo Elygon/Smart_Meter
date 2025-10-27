@@ -25,17 +25,21 @@ import MyTickets from './pages/user/MyTickets'
 import AdminLogin from './pages/admin/Login'
 import AdminDashboard from './pages/admin/Dashboard'
 import AdminProfile from './pages/admin/Profile'
+import AdminChangePassword from './pages/admin/ChangePassword'
 import ManageUsers from './pages/admin/ManageUsers'
 import ManageUser from './pages/admin/ManageUser'
 import ManageMeters from './pages/admin/ManageMeters'
 import ManageMeter from './pages/admin/ManageMeter'
 import Recharges from './pages/admin/Recharges'
-/*import AdminLogs from './pages/admin/ViewLogs'*/
+import ManageTickets from './pages/admin/ManageTickets'
+import ManageTicket from './pages/admin/ManageTicket'
 import CreateNotification from './pages/admin/CreateNotification'
 import AllNotifications from './pages/admin/AllNotifications'
 import AdminNotification from './pages/admin/AdminNotification'
-import ManageTickets from './pages/admin/ManageTickets'
-import ManageTicket from './pages/admin/ManageTicket'
+
+
+/*import AdminLogs from './pages/admin/ViewLogs'*/
+
 
 /*import RequireAdmin from './components/RequireAdmin'
 /*import RequireUser from './components/RequireUser'
@@ -116,14 +120,17 @@ const App = () => {
         <Route path="/user/notification" element={<Notification />} />
         
         <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/change-password" element={<AdminChangePassword />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/admin/profile" elemeent={<AdminProfile />} />
+        <Route path="/admin/Profile" element={<AdminProfile />} />
         <Route path="/admin/recharges" element={<Recharges />} />
-        <Route path="/admin/create-notification" element={<CreateNotification />} />
+        <Route path="/admin/CreateNotification" element={<CreateNotification />} />
         <Route path="/admin/all-notifications" element={<AllNotifications />} />
         <Route path="/admin/admin-notification" element={<AdminNotification />} />
+        <Route path="/admin/replies" element={<ManageTickets />} />
+        <Route path="/admin/ManageTicket" element={<ManageTicket />} />
         <Route path="/admin/manage-users" element={<ManageUsers />} />
-        <Route path="/admin/manage-user" element={<ManageUser />} />
+        <Route path="/admin/ManageUser" element={<ManageUser />} />
         <Route path="/admin/manage-meters" element={<ManageMeters />} />
         <Route path="/admin/manage-meter" element={<ManageMeter />} />
         

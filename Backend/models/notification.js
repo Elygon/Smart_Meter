@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const notificationSchema = new Schema({
@@ -10,7 +10,7 @@ const notificationSchema = new Schema({
     isRead: {type: Boolean, default: false}, //Tracks if user has read it
     createdBy: {type: mongoose.Schema.Types.ObjectId, ref: "Admin", required: true}, //Admin who created the notification
     createdAt: {type: Date, default: Date.now},
-}, {collection: 'notifications'});
+}, {collection: 'notifications'})
 
 const model = mongoose.model('Notification', notificationSchema)
 module.exports = model

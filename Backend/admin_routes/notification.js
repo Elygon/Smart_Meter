@@ -103,9 +103,10 @@ router.post('/view', async(req, res) => {
         const admin = jwt.verify(token, process.env.JWT_SECRET)
 
         //Fetch all notifications sent by this admin
-        const notification = await Notification.find({ createdBy: admin._id}).sort({createdAt: -1})
+        const notifications = await Notification.find().sort({ createdAt: -1 }) // latest first
+        .populate('createdBy', 'fullname email'); // include admin's fullname & email
 
-        return res.status(200).send({status: 'ok', msg: 'Notifications retrieved successfully', notification})
+        return res.status(200).send({status: 'ok', msg: 'Notifications retrieved successfully', notifications})
     } catch (e) {
         if (e.name === "JsonWebTokenError") {
             return res.status(400).send({status: 'error', msg:'Token verification failed', error: e.message})
@@ -156,7 +157,7 @@ router.post('/single', async(req, res) => {
         //Verify the admin's token
         const Admin = jwt.verify(token, process.env.JWT_SECRET)
 
-        const notification = await Notification.findById(id).populate("user", "fullname email")
+        const notification = await Notification.findById(id).populate("createdBy", "fullname email")
         
         if (!notification) {
             return res.status(400).send({status: "error", msg: "Notification not found"})

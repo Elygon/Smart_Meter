@@ -1,10 +1,15 @@
 import React, { useEffect, useState } from "react"
 import axios from "axios"
+import { useLocation, useNavigate } from "react-router-dom"
 
-const AdminNotification = ({ notificationId, goBack }) => {
+const AdminNotification = ({ goBack }) => {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const { notificationId } = location.state
   const [notification, setNotification] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  const [successMsg, setSuccessMsg] = useState("")
   const [edit, setEdit] = useState(false)
   const [formData, setFormData] = useState({
     title: "",
@@ -15,15 +20,15 @@ const AdminNotification = ({ notificationId, goBack }) => {
   const fetchNotification = async () => {
     try {
       const token = localStorage.getItem("token")
-      const res = await axios.post("http://localhost:4500/admin_notication/single", {
+      const res = await axios.post("http://localhost:4500/admin_notification/single", {
         token,
         id: notificationId,
       })
-      setNotification(res.data)
+      setNotification(res.data.notification) // Assuming API returns { notification: {...} }
       setFormData({
-        title: res.data.title,
-        message: res.data.message,
-        type: res.data.type,
+        title: res.data.notification.title,
+        message: res.data.notification.message,
+        type: res.data.notification.type,
       })
     } catch (e) {
       setError("Error fetching notification details.")
@@ -41,11 +46,18 @@ const AdminNotification = ({ notificationId, goBack }) => {
 
     try {
       const token = localStorage.getItem("token")
-      await axios.post("http://localhost:4500/admin_notication/delete", {
+      await axios.post("http://localhost:4500/admin_notification/delete", {
         token,
-        notificationIds: notificationId,
+        notificationIds: [notificationId],
       })
+
+      setSuccessMsg("Notification deleted successfully!")
+    
+      // Give the user a few seconds to see the message before going back
+      setTimeout(() => {
       goBack()
+      setSuccessMsg("")
+      }, 3000) // 3 seconds
     } catch (e) {
       alert("Failed to delete notification.")
     }
@@ -54,13 +66,17 @@ const AdminNotification = ({ notificationId, goBack }) => {
   const handleUpdate = async () => {
     try {
       const token = localStorage.getItem("token")
-      await axios.post("http://localhost:4500/admin_notication/update", {
+      await axios.post("http://localhost:4500/admin_notification/update", {
         token,
-        notificationId,
+        id: notificationId,
         ...formData,
       })
       setEdit(false)
       fetchNotification()
+
+      // Show success message for a few seconds
+      setSuccessMsg("Notification updated successfully!")
+      setTimeout(() => setSuccessMsg(""), 4000) // 4secs
     } catch (e) {
       alert("Failed to update notification.")
     }
@@ -93,7 +109,7 @@ const AdminNotification = ({ notificationId, goBack }) => {
       <div className="hidden lg:flex w-1/2 bg-[#0f172a] text-gray-200 flex-col items-center justify-center p-10 rounded-r-3xl">
         <h1 className="text-4xl font-bold mb-4 text-white">Admin Dashboard</h1>
         <p className="text-gray-400 text-center max-w-md leading-relaxed">
-          View, edit, or delete existing notifications sent to members of the platform. 
+          View, edit or delete existing notifications sent to members of the platform. 
           Keep communication accurate and up-to-date.
         </p>
       </div>
@@ -104,6 +120,13 @@ const AdminNotification = ({ notificationId, goBack }) => {
           <h2 className="text-2xl font-bold text-gray-800 mb-2 text-center">
             Notification Details
           </h2>
+
+          {successMsg && (
+            <p className="text-green-600 text-center mb-4 font-medium">
+              {successMsg}
+            </p>
+          )}
+
           <p className="text-gray-500 text-center mb-6">
             {edit ? "Update notification details below." : "View the details below."}
           </p>
@@ -183,6 +206,14 @@ const AdminNotification = ({ notificationId, goBack }) => {
                 <span className="font-semibold text-gray-800">Message:</span>{" "}
                 {notification.message}
               </p>
+              <p>
+                <span className="font-semibold text-gray-800">Created By:</span>{" "}
+                {notification.createdBy?.fullname || "—"}
+              </p>
+              <p>
+                <span className="font-semibold text-gray-800">Email:</span>{" "}
+                {notification.createdBy?.email || "—"}
+              </p>
             </div>
           )}
 
@@ -191,20 +222,20 @@ const AdminNotification = ({ notificationId, goBack }) => {
             {!edit && (
               <button
                 onClick={() => setEdit(true)}
-                className="flex-1 bg-blue-600 text-white py-2 rounded-xl font-semibold hover:bg-blue-700 transition"
+                className="bg-[#0f172a] hover:bg-[#1e293b] text-white text-sm px-4 py-2 rounded-lg transition"
               >
                 Update
               </button>
             )}
             <button
               onClick={handleDelete}
-              className="flex-1 bg-red-600 text-white py-2 rounded-xl font-semibold hover:bg-red-700 transition"
+              className="bg-[#0f172a] hover:bg-[#1e293b] text-white text-sm px-4 py-2 rounded-lg transition"
             >
               Delete
             </button>
             <button
-              onClick={goBack}
-              className="flex-1 bg-gray-600 text-white py-2 rounded-xl font-semibold hover:bg-gray-700 transition"
+              onClick={() => navigate(-1)}
+              className="bg-[#0f172a] hover:bg-[#1e293b] text-white text-sm px-4 py-2 rounded-lg transition"
             >
               Back
             </button>

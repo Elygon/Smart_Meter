@@ -10,42 +10,42 @@ const Contact = require('../models/contact')
 
 
 // Admin reply to a user inquiry (ticket)
-router.post('/reply', async(req, res) => {
-    const {token, contactId, message} = req.body
+router.post('/reply', async (req, res) => {
+    const { token, contactId, message } = req.body
 
-    if(!token || !contactId || !message) {
-        return res.status(400).send({status: 'error', msg: 'All fields must be filled'})
+    if (!token || !contactId || !message) {
+        return res.status(400).send({ status: 'error', msg: 'All fields must be filled' })
     }
 
     try {
-        //Verify the user's token
+        // Verify the admin token
         const admin = jwt.verify(token, process.env.JWT_SECRET)
 
         const inquiry = await Contact.findById(contactId)
         if (!inquiry) {
-            return res.status(400).send({status: "error", msg: "Contact ticket not found"})
+            return res.status(400).send({ status: "error", msg: "Contact ticket not found" })
         }
 
         // Create a reply
-        const reply = await Reply.create()
-        reply.contact = inquiry._id
-        reply.message = message
-        reply.repliedBy = req.admin._id
+        const reply = await Reply.create({
+            contact: inquiry._id,
+            message,
+            repliedBy: admin._id // use admin info from token
+        })
 
         // Update contact status to "In Progress" when replying
-        contact.status = 'In Progress'
+        inquiry.status = 'in-progress'
         await inquiry.save()
-        await reply.save()
 
-        return res.status(200).send({status: 'success', msg: 'Reply sent successfully', reply})
+        return res.status(200).send({ status: 'success', msg: 'Reply sent successfully', reply })
 
     } catch (e) {
         if (e.name === "JsonWebTokenError") {
-            return res.status(400).send({status: 'error', msg:'Token verification failed', error: e.message})
+            return res.status(400).send({ status: 'error', msg: 'Token verification failed', error: e.message })
         }
-        return res.status(500).send({status: 'error', msg:'Error sending reply', error: e.message})
-    }  
-})
+        return res.status(500).send({ status: 'error', msg: 'Error sending reply', error: e.message })
+    }}
+)
 
 
 // Admin updates the status of a contact ticket
